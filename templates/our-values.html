@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}Aureliana Jewelry - Our Values{% endblock %}
+
+{% block head_styles %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/ourvalues.css') }}" />
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Playfair+Display&display=swap" rel="stylesheet" />
+{% endblock %}
+
+{% block content %}
+<main class="values-main">
+  <section class="values-section">
+    <h1><span class="emoji">🌟</span>Our Values</h1>
+    <div class="value-block">
+      <div class="value-title"><span class="emoji">💎</span>Timeless Elegance</div>
+      <div class="value-desc">
+        We believe jewelry should be more than just an accessory — it should be a statement of timeless beauty and personal style.
+      </div>
+    </div>
+    <div class="value-block">
+      <div class="value-title"><span class="emoji">🛠️</span>Exceptional Craftsmanship</div>
+      <div class="value-desc">
+        Each piece is made with precision and care, combining classic techniques with modern design to ensure lasting quality.
+      </div>
+    </div>
+    <div class="value-block">
+      <div class="value-title"><span class="emoji">🌹</span>Premium Materials</div>
+      <div class="value-desc">
+        We use only genuine gold and rose gold, ensuring every piece not only shines but stands the test of time.
+      </div>
+    </div>
+    <div class="value-block">
+      <div class="value-title"><span class="emoji">✨</span>Empowering Confidence</div>
+      <div class="value-desc">
+        Our jewelry is designed to help you feel your best — confident, beautiful, and true to yourself.
+      </div>
+    </div>
+    <div class="value-block">
+      <div class="value-title"><span class="emoji">🤝</span>Honest Pricing</div>
+      <div class="value-desc">
+        Luxury should be accessible. We offer fair prices without compromising on quality or integrity.
+      </div>
+    </div>
+  </section>
+</main>
+{% endblock %}

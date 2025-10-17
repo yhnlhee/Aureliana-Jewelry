@@ -1,0 +1,409 @@
+{% extends "base.html" %}
+
+{% block title %}Bracelet Collection - Aureliana Jewelry{% endblock %}
+
+{% block head_styles %}
+    <style>
+        body {
+            padding-top: 10px !important;
+            background-color: #f8f6f3;
+        }
+
+        .collection-hero {
+            padding: 0rem 2rem 2rem;
+            background-color: transparent;
+            text-align: center;
+        }
+
+        .collection-hero h1 {
+            font-size: 3.5rem;
+            margin: 0;
+            color: #333333;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .collection-hero p {
+            font-size: 1.2rem;
+            margin-top: 0.5rem;
+            color: #555555;
+        }
+
+        .category-nav-container {
+            padding: 0.4rem 2rem 3rem;
+            background-color: transparent;
+            text-align: center;
+        }
+
+        .category-button {
+            background-color: #ffffff;
+            color: #333333;
+            border: 2px solid #cd7f32;
+            padding: 0.8rem 1.5rem;
+            margin: 0 0.5rem 1rem 0;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .category-button i {
+            font-size: 1.1rem;
+            transition: transform 0.3s ease;
+        }
+
+        .category-button:hover i, .category-button.active i {
+            transform: scale(1.1);
+        }
+
+        .category-button:hover, .category-button.active {
+            background-color: #cd7f32;
+            color: #ffffff;
+            border-color: #cd7f32;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0rem 1.2rem 1.2rem;
+        }
+
+        .material-category {
+            display: none;
+            margin-bottom: 2rem;
+        }
+
+        .material-category.active {
+            display: block;
+        }
+
+        .material-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.2rem;
+            color: #333333;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #cd7f32;
+        }
+
+        .jewelry-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 1.2rem;
+        }
+
+        .jewelry-item {
+            background: #ffffff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            transition: transform 0.3s, box-shadow 0.3s;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid #e0d9d0;
+        }
+
+        .jewelry-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        .item-link {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .jewelry-img-container {
+            width: 100%;
+            padding-top: 90%; /* slightly less tall */
+            position: relative;
+        }
+
+        .jewelry-img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .jewelry-info {
+            padding: 0.7rem;
+            text-align: center;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .jewelry-name {
+            font-size: 1.08rem;
+            margin: 0 0 0.5rem;
+            color: #333333;
+            font-weight: 600;
+        }
+
+        .jewelry-price {
+            font-size: 1rem;
+            font-weight: bold;
+            color: #cd7f32;
+            margin: 0;
+        }
+
+        .cart-actions {
+            padding: 0 0.7rem 0.7rem;
+        }
+        
+        .stock-status {
+            height: 20px;
+            margin-bottom: 0.5rem;
+            text-align: center;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+        
+        .stock-low {
+            color: #d98c00;
+        }
+        
+        .stock-out-of-stock {
+            color: #d93b3b;
+        }
+        
+        .stock-in-stock {
+            color: #28a745;
+        }
+        
+        .stock-status i {
+            margin-right: 5px;
+        }
+        
+        .add-to-cart-btn i {
+            margin-right: 5px;
+        }
+        
+        .btn-view-reviews i {
+            margin-right: 5px;
+        }
+        
+        .add-to-cart-btn {
+            background-color: #cd7f32;
+            color: #ffffff;
+            border: none;
+            padding: 0.9rem;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: background-color 0.3s;
+            width: 100%;
+            border-radius: 8px;
+        }
+        
+        .add-to-cart-btn:hover:not(:disabled) {
+            background-color: #a0522d;
+        }
+        
+        .add-to-cart-btn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+
+        .btn-view-reviews {
+            display: block;
+            width: 100%;
+            margin-top: 8px;
+            background: #d4af37;
+            color: #fff;
+            border: none;
+            border-radius: 7px;
+            padding: 10px 0;
+            font-size: 1.05rem;
+            font-weight: 600;
+            text-align: center;
+            cursor: pointer;
+            transition: background 0.2s;
+            box-shadow: 0 2px 8px rgba(212,175,55,0.08);
+            text-decoration: none;
+        }
+        .btn-view-reviews:hover {
+            background: #b8860b;
+            color: #fff;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+<section class="collection-hero">
+    <h1>Bracelet Collection</h1>
+    <p>Elegant bracelets to complement any look.</p>
+</section>
+
+<div class="category-nav-container">
+    <button class="category-button active" onclick="filterSelection('all')">
+        <i class="fas fa-link"></i> View All
+    </button>
+    <button class="category-button" onclick="filterSelection('gold')">
+        <i class="fas fa-gem"></i> Gold
+    </button>
+    <button class="category-button" onclick="filterSelection('rose-gold')">
+        <i class="fas fa-heart"></i> Rose Gold
+    </button>
+</div>
+
+<main class="container">
+    <section id="gold" class="material-category active">
+        <h3 class="material-title">Gold</h3>
+        <div class="jewelry-grid">
+            {% for product in products if product.material == 'Gold' %}
+            <div class="jewelry-item">
+                <a href="#" class="item-link">
+                    <div class="jewelry-img-container">
+                        <img src="{{ url_for('static', filename=product.image) }}" alt="{{ product.name }}" class="jewelry-img">
+                    </div>
+                    <div class="jewelry-info">
+                        <h3 class="jewelry-name">{{ product.name }}</h3>
+                        <p class="jewelry-price">₱{{ "%.2f"|format(product.price) }}</p>
+                    </div>
+                </a>
+                <div class="cart-actions">
+                    <div class="stock-status">
+                        {% if product.current_stock == 0 %}
+                            <span class="stock-out-of-stock">
+                                <i class="fas fa-times-circle"></i> Out of Stock
+                            </span>
+                        {% elif product.current_stock <= product.low_stock_threshold %}
+                            <span class="stock-low">
+                                <i class="fas fa-exclamation-triangle"></i> Low Stock ({{ product.current_stock }} left)
+                            </span>
+                        {% else %}
+                            <span class="stock-in-stock">
+                                <i class="fas fa-check-circle"></i> In Stock ({{ product.current_stock }} available)
+                            </span>
+                        {% endif %}
+                    </div>
+                    <button class="add-to-cart-btn"
+                            data-product-id="{{ product.inventory_ID }}"
+                            data-product-name="{{ product.name }}"
+                            data-product-price="{{ product.price }}"
+                            data-product-image="{{ url_for('static', filename=product.image) }}"
+                            data-current-stock="{{ product.current_stock }}"
+                            {% if product.current_stock == 0 %}disabled{% endif %}>
+                        {% if product.current_stock == 0 %}
+                            <i class="fas fa-times"></i> Out of Stock
+                        {% else %}
+                            <i class="fas fa-shopping-cart"></i> Add to Cart
+                        {% endif %}
+                    </button>
+                    <a href="{{ url_for('product_detail', product_code=product.product_code) }}#reviews" class="btn-view-reviews">
+                        <i class="fas fa-star"></i> View Reviews
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <section id="rose-gold" class="material-category active">
+        <h3 class="material-title">Rose Gold</h3>
+        <div class="jewelry-grid">
+            {% for product in products if product.material == 'Rose Gold' %}
+            <div class="jewelry-item">
+                <a href="#" class="item-link">
+                    <div class="jewelry-img-container">
+                        <img src="{{ url_for('static', filename=product.image) }}" alt="{{ product.name }}" class="jewelry-img">
+                    </div>
+                    <div class="jewelry-info">
+                        <h3 class="jewelry-name">{{ product.name }}</h3>
+                        <p class="jewelry-price">₱{{ "%.2f"|format(product.price) }}</p>
+                    </div>
+                </a>
+                <div class="cart-actions">
+                    <div class="stock-status">
+                        {% if product.current_stock == 0 %}
+                            <span class="stock-out-of-stock">
+                                <i class="fas fa-times-circle"></i> Out of Stock
+                            </span>
+                        {% elif product.current_stock <= product.low_stock_threshold %}
+                            <span class="stock-low">
+                                <i class="fas fa-exclamation-triangle"></i> Low Stock ({{ product.current_stock }} left)
+                            </span>
+                        {% else %}
+                            <span class="stock-in-stock">
+                                <i class="fas fa-check-circle"></i> In Stock ({{ product.current_stock }} available)
+                            </span>
+                        {% endif %}
+                    </div>
+                    <button class="add-to-cart-btn"
+                            data-product-id="{{ product.inventory_ID }}"
+                            data-product-name="{{ product.name }}"
+                            data-product-price="{{ product.price }}"
+                            data-product-image="{{ url_for('static', filename=product.image) }}"
+                            data-current-stock="{{ product.current_stock }}"
+                            {% if product.current_stock == 0 %}disabled{% endif %}>
+                        {% if product.current_stock == 0 %}
+                            <i class="fas fa-times"></i> Out of Stock
+                        {% else %}
+                            <i class="fas fa-shopping-cart"></i> Add to Cart
+                        {% endif %}
+                    </button>
+                    <a href="{{ url_for('product_detail', product_code=product.product_code) }}#reviews" class="btn-view-reviews">
+                        <i class="fas fa-star"></i> View Reviews
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+</main>
+
+<script>
+    function filterSelection(selection) {
+        const categories = document.querySelectorAll('.material-category');
+        const buttons = document.querySelectorAll('.category-button');
+
+        buttons.forEach(btn => btn.classList.remove('active'));
+        
+        const activeButton = Array.from(buttons).find(btn => btn.textContent.toLowerCase().includes(selection.replace('-', ' ')));
+        if (activeButton) {
+            activeButton.classList.add('active');
+        }
+
+        if (selection === 'all') {
+            categories.forEach(cat => cat.classList.add('active'));
+        } else {
+            categories.forEach(cat => {
+                if (cat.id === selection) {
+                    cat.classList.add('active');
+                } else {
+                    cat.classList.remove('active');
+                }
+            });
+        }
+    }
+
+    // Initialize with 'all' shown
+    document.addEventListener('DOMContentLoaded', () => {
+        filterSelection('all');
+
+        const cartButtons = document.querySelectorAll('.add-to-cart-btn');
+        cartButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                if (button.disabled) return;
+                const productId = button.dataset.productId;
+                const productName = button.dataset.productName;
+                const productPrice = parseFloat(button.dataset.productPrice);
+                const productImage = button.dataset.productImage;
+                const currentStock = button.dataset.currentStock;
+                addToCart(productId, productName, productPrice, productImage, currentStock);
+            });
+        });
+    });
+</script>
+{% endblock %}

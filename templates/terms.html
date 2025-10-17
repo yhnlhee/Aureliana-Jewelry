@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}Terms and Conditions - Aureliana Jewelry{% endblock %}
+
+{% block head_styles %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/Terms.css') }}" />
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Playfair+Display&display=swap" rel="stylesheet" />
+{% endblock %}
+
+{% block content %}
+<main class="terms-main">
+    <section class="terms-section">
+        <h1>Terms and Conditions</h1>
+        <p>Welcome to Aureliana Jewelry. By accessing our website and purchasing our products, you agree to be bound by the following terms and conditions. Please read them carefully.</p>
+        
+        <h2>1. General</h2>
+        <p>We reserve the right to modify these terms and conditions at any time. Any changes will be effective immediately upon posting to the website. Your continued use of the site following the posting of changes will constitute your acceptance of such changes.</p>
+        
+        <h2>2. Products</h2>
+        <p>All products are subject to availability. We reserve the right to limit the quantity of products we supply, supply only part of an order, or to divide up orders. We also reserve the right to alter the terms or duration of any special offers or promotions.</p>
+        
+        <h2>3. Pricing</h2>
+        <p>All prices are listed in Philippine Peso (PHP) and are inclusive of VAT. We reserve the right to change prices at any time without prior notice.</p>
+        
+        <h2>4. Intellectual Property</h2>
+        <p>All content on this site, including but not limited to text, graphics, logos, images, and software, is the property of Aureliana Jewelry or its content suppliers and is protected by international copyright laws.</p>
+    </section>
+</main>
+{% endblock %}

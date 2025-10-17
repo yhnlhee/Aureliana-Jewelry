@@ -1,0 +1,439 @@
+/* Base styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    color: #333;
+    background-color: #f0f2f5;
+    line-height: 1.6;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+
+    /* Hide scrollbar (from your provided cart.css) */
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+}
+body::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+}
+
+
+a {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+a:hover,
+a:focus {
+    color: #cfc2aa; /* Hover color for links */
+    outline: none;
+}
+
+ul {
+    list-style: none;
+}
+
+/* Logo and Header Styles */
+header {
+    position: fixed; /* Keep fixed */
+    top: 0;
+    left: 0;
+    width: 100%; /* Ensure it spans full width */
+    z-index: 1000;
+    padding: 1rem 2rem;
+    background-color: #4c3f2e;
+    border-bottom: 1px solid #3e3a31;
+    color: #cfc2aa;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+}
+
+nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1400px; /* Max width for nav content on desktop */
+    margin: 0 auto; /* Center nav content on desktop */
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0; /* Prevent logo from shrinking */
+}
+
+.logo img {
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    border: 1px solid #3e3a31;
+}
+
+.logo-text {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px;
+    color: #f0eade;
+    font-weight: 700;
+    user-select: none;
+    white-space: nowrap;
+}
+
+/* Desktop Navigation Links */
+.nav-links-container {
+    display: flex; /* Default desktop display */
+    flex-grow: 1; /* Allow container to take remaining space */
+    justify-content: flex-end; /* Push links to the right */
+}
+
+.nav-links {
+    display: flex; /* Default desktop display */
+    list-style: none;
+    gap: 25px;
+    font-weight: 600;
+    font-size: 15px;
+    margin: 0; /* Reset default list margins */
+    padding: 0; /* Reset default list padding */
+    align-items: center; /* Vertically align items */
+}
+
+.nav-links li a {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 5px;
+    color: #f0eade;
+    border-bottom: 2px solid transparent;
+    transition: border-color 0.3s ease, color 0.3s ease;
+    white-space: nowrap;
+}
+
+.nav-links li a:hover,
+.nav-links li a.active {
+    border-color: #cfc2aa;
+    color: #cfc2aa;
+}
+
+/* --- Hamburger Menu Icon Styles (hidden on desktop, visible on mobile) --- */
+.hamburger-menu {
+    display: none; /* Hide by default on desktop */
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    width: 30px;
+    height: 25px; /* Adjusted height for 3 bars + spacing */
+    position: relative; /* Changed from absolute to relative for easier centering in nav */
+    z-index: 1001; /* Ensure button is on top */
+    flex-direction: column; /* Allows bars to stack */
+    justify-content: space-around; /* Distributes bars evenly */
+}
+
+.hamburger-menu .bar {
+    display: block;
+    width: 100%;
+    height: 3px;
+    background-color: #f0eade; /* Color for the hamburger bars */
+    border-radius: 2px;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Animation for hamburger to 'X' */
+.hamburger-menu.active .bar:nth-child(1) {
+    transform: translateY(9px) rotate(45deg);
+}
+
+.hamburger-menu.active .bar:nth-child(2) {
+    opacity: 0;
+}
+
+.hamburger-menu.active .bar:nth-child(3) {
+    transform: translateY(-9px) rotate(-45deg);
+}
+
+/* Footer */
+footer {
+    background: #4c3f2e;
+    border-top: 1px solid #3e3a31;
+    color: #f0eade;
+    padding: 30px 20px 15px;
+}
+
+.footer-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: grid; /* Use grid for layout on desktop */
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Flexible columns */
+    gap: 2rem; /* Gap between columns */
+}
+
+.footer-links {
+    text-align: left; /* Align text left within each section */
+}
+
+.footer-links h4 {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    color: #cfc2aa;
+    margin-bottom: 15px;
+}
+
+.footer-links ul {
+    display: flex;
+    flex-direction: column; /* Stack links vertically on desktop */
+    gap: 10px; /* Spacing between stacked links */
+    padding: 0; /* Remove default list padding */
+    margin: 0; /* Remove default list margin */
+}
+
+.footer-links li a {
+    color: #ddd6c9;
+    font-size: 15px;
+    transition: color 0.3s ease; /* Add transition for hover */
+}
+
+.footer-links li a:hover {
+    color: #d4af37;
+}
+
+.footer-bottom {
+    text-align: center;
+    font-size: 13px;
+    border-top: 1px solid #5a5345; /* Darker border for consistency */
+    padding-top: 15px; /* Increase padding */
+    margin-top: 20px; /* Increase margin */
+}
+
+/* Main content adjustments */
+main {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 80px; /* Add padding-top to account for fixed header */
+    padding-left: 1rem; /* Add horizontal padding for general content */
+    padding-right: 1rem;
+}
+
+/* Custom Shopee Orange */
+.bg-shopee-orange {
+    background-color: #473936;
+}
+
+.bg-shopee-orange:hover {
+    background-color: #3e3a31;
+}
+
+/* Form Styles */
+input[type="text"],
+input[type="email"],
+input[type="tel"] {
+    transition: all 0.3s ease-in-out;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="tel"]:focus {
+    border-color: #473936;
+    box-shadow: 0 0 0 2px rgba(71, 57, 54, 0.2);
+}
+
+label[for^='select-all'], label[for*='select-all'], #select-all-cart-items + label, label[for='select-all-cart-items'] {
+    color: #fff !important;
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+/* --- Mobile Responsive Adjustments --- */
+@media (max-width: 768px) {
+    header {
+        padding: 0.8rem 1rem; /* Adjust header padding for mobile */
+        position: fixed; /* Keep header fixed */
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    nav {
+        max-width: 100%; /* Remove max-width on mobile */
+        padding: 0; /* Reset nav padding */
+    }
+
+    .logo img {
+        width: 45px; /* Smaller logo on mobile */
+        height: 45px;
+    }
+
+    .logo-text {
+        font-size: 20px; /* Smaller font for logo text */
+    }
+
+    .hamburger-menu {
+        display: flex; /* Show hamburger icon on mobile */
+        width: 36px; /* Larger hit area */
+        height: 30px; /* Larger hit area */
+        order: 2; /* Place it after logo in flex order */
+        margin-left: auto; /* Push to the right */
+        align-items: center; /* Center bars vertically */
+        justify-content: center; /* Center bars horizontally within its container */
+    }
+
+    .hamburger-menu .bar {
+        width: 28px; /* Slightly shorter bars for mobile */
+        height: 3px;
+        margin: 4px auto; /* More vertical space, centered */
+    }
+
+    .hamburger-menu.active .bar:nth-child(1) {
+        transform: translateY(7px) rotate(45deg); /* Adjust transform for new bar size/spacing */
+    }
+    .hamburger-menu.active .bar:nth-child(3) {
+        transform: translateY(-7px) rotate(-45deg); /* Adjust transform */
+    }
+
+    .nav-links-container {
+        display: flex; /* Show by default in media query to set up active state */
+        position: fixed; /* Use fixed position for full overlay */
+        top: 61px; /* Position below header, adjust if header height changes */
+        left: 0;
+        width: 100vw; /* Full viewport width */
+        height: calc(100vh - 61px); /* Fill remaining viewport height */
+        background-color: #4c3f2e; /* Dark background for mobile menu */
+        flex-direction: column;
+        align-items: center; /* Center links horizontally */
+        justify-content: flex-start; /* Align links to the top */
+        padding: 1rem 0; /* Padding for the mobile menu content */
+        transform: translateX(-100%); /* Start off-screen to the left */
+        opacity: 0; /* Initially hidden */
+        transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+        z-index: 998; /* Ensure it's below hamburger but above main content */
+        overflow-y: auto; /* Allow scrolling if menu content is long */
+    }
+
+    .nav-links-container.active {
+        transform: translateX(0); /* Slide in from the left */
+        opacity: 1;
+    }
+
+    .nav-links {
+        flex-direction: column; /* Stack links vertically */
+        width: 100%; /* Occupy full width of container */
+        gap: 0; /* No gap between list items as padding is on `li` */
+    }
+
+    .nav-links li {
+        width: 100%;
+        border-bottom: 1px solid #5a5345; /* Separator for menu items */
+        text-align: center; /* Center text within each list item */
+    }
+
+    .nav-links li:last-child {
+        border-bottom: none; /* No border for the last item */
+    }
+
+    .nav-links li a {
+        padding: 15px 1rem; /* More vertical padding for tap target */
+        font-size: 1.1rem; /* Larger font size for mobile links */
+        color: #f0eade; /* Ensure visibility on dark background */
+        display: block; /* Make the whole area clickable */
+    }
+
+    .nav-links li a:hover,
+    .nav-links li a.active {
+        background-color: #5a5345; /* Darker background on hover/active */
+        color: #cfc2aa;
+    }
+
+    main {
+        padding-top: 61px; /* Adjust main content padding to account for shorter mobile header */
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+    }
+
+    .footer-content {
+        grid-template-columns: 1fr; /* Stack footer sections vertically */
+        gap: 1.5rem; /* Smaller gap for mobile */
+    }
+
+    .footer-links ul {
+        flex-direction: column; /* Ensure links are stacked in footer sections */
+        gap: 8px; /* Smaller gap */
+        text-align: center; /* Center text in footer links */
+    }
+
+    .footer-links h4 {
+        text-align: center; /* Center section titles */
+        margin-bottom: 10px;
+    }
+
+    .footer-bottom {
+        padding-top: 10px;
+        margin-top: 10px;
+        font-size: 0.8rem;
+    }
+}
+
+@media (max-width: 480px) {
+    header {
+        padding: 0.5rem 0.75rem; /* Even tighter header padding */
+    }
+
+    .logo img {
+        width: 38px; /* Even smaller logo */
+        height: 38px;
+    }
+
+    .logo-text {
+        font-size: 18px; /* Even smaller logo text */
+    }
+
+    .hamburger-menu {
+        width: 30px; /* Smaller hamburger icon */
+        height: 25px;
+    }
+
+    .hamburger-menu .bar {
+        width: 22px; /* Even shorter bars */
+        margin: 3px auto; /* Tighter spacing */
+    }
+    .hamburger-menu.active .bar:nth-child(1) {
+        transform: translateY(6px) rotate(45deg);
+    }
+    .hamburger-menu.active .bar:nth-child(3) {
+        transform: translateY(-6px) rotate(-45deg);
+    }
+
+    .nav-links-container {
+        top: 50px; /* Adjust top position for smaller header */
+        height: calc(100vh - 50px);
+        width: 90vw; /* Make menu slightly narrower */
+    }
+
+    .nav-links li a {
+        padding: 12px 0.8rem; /* Slightly less padding for links */
+        font-size: 1rem; /* Smaller font size */
+    }
+
+    main {
+        padding-top: 50px; /* Adjust main content padding */
+        padding-left: 0.2rem;
+        padding-right: 0.2rem;
+    }
+
+    .footer-content {
+        gap: 1rem; /* Even smaller gap */
+    }
+
+    .footer-links h4 {
+        font-size: 16px;
+    }
+
+    .footer-links li a {
+        font-size: 14px;
+    }
+}

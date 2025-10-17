@@ -1,0 +1,173 @@
+{% extends "base.html" %}
+{% block title %}Order Receipt - Aureliana Jewelry{% endblock %}
+{% block content %}
+<div style="min-height: 100vh; width: 100vw; display: flex; justify-content: center; align-items: flex-start; padding: 2rem 0;">
+    <div class="receipt-card">
+        <h2 class="receipt-title">Aureliana Jewelry</h2>
+        <div class="receipt-info">
+            <p><strong>Order Number:</strong> {{ order.order_number }}</p>
+            <p><strong>Status:</strong> {% if order.payment_method and order.payment_method.lower() == 'cash on delivery' %}Pending{% else %}{{ order.status }}{% endif %}</p>
+            <p><strong>Order Date:</strong> {{ order.created_at }}</p>
+            <p><strong>Payment Method:</strong> {{ order.payment_method if order.payment_method else 'N/A' }}</p>
+            <p><strong>Estimated Delivery:</strong> 3-5 days</p>
+            <p><strong>Shipping Address:</strong><br>
+                {{ address_details }}<br>
+                {{ barangay_name }}, {{ city_name }}, {{ province_name }}, {{ region_name }}
+            </p>
+        </div>
+        <hr class="receipt-divider" style="margin: 1.2rem 0 1.2rem 0; border-top: 1.5px solid #e5e5e5;">
+        <table class="receipt-items-table">
+            <thead>
+                <tr>
+                    <th style="text-align:left;">Product</th>
+                    <th style="text-align:center;">Unit Price</th>
+                    <th style="text-align:center;">Quantity</th>
+                    <th style="text-align:right;">Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in items %}
+                <tr>
+                    <td style="text-align:left;">{{ item.product_name }}</td>
+                    <td style="text-align:center;">₱{{ '%.2f'|format(item.unit_price) }}</td>
+                    <td style="text-align:center;">{{ item.quantity }}</td>
+                    <td style="text-align:right;">₱{{ '%.2f'|format(item.unit_price * item.quantity) }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr class="receipt-total-row">
+                    <td colspan="3" style="text-align:right;">Total Amount:</td>
+                    <td style="text-align:right;">₱{{ '%.2f'|format(order.total_amount) }}</td>
+                </tr>
+            </tfoot>
+        </table>
+        <div class="receipt-footer">
+            <p>Thank you for shopping with us!</p>
+            <p class="receipt-note">This serves as your official receipt.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Clear cart and update cart counter after successful order
+        localStorage.removeItem('cart');
+        if (typeof updateCartCount === 'function') {
+            updateCartCount();
+        } else {
+            // fallback: manually set cart-count to 0
+            var cartCountElement = document.getElementById('cart-count');
+            if (cartCountElement) cartCountElement.textContent = '0';
+        }
+        const barangayCode = `{{ barangay_code }}`;
+        const cityCode = `{{ city_code }}`;
+        const provinceCode = `{{ province_code }}`;
+        const regionCode = `{{ region_code }}`;
+        // Fetch and display names
+        fetch('/static/json/region.json').then(r => r.json()).then(regions => {
+            const region = regions.find(r => r.region_code === regionCode);
+            document.getElementById('receipt-region').textContent = region ? region.region_name : regionCode;
+        });
+        fetch('/static/json/province.json').then(r => r.json()).then(provinces => {
+            const province = provinces.find(p => p.province_code === provinceCode);
+            document.getElementById('receipt-province').textContent = province ? province.province_name : provinceCode;
+        });
+        fetch('/static/json/city.json').then(r => r.json()).then(cities => {
+            const city = cities.find(c => c.city_code === cityCode);
+            document.getElementById('receipt-city').textContent = city ? city.city_name : cityCode;
+        });
+        fetch('/static/json/barangay.json').then(r => r.json()).then(barangays => {
+            const barangay = barangays.find(b => b.brgy_code === barangayCode);
+            document.getElementById('receipt-barangay').textContent = barangay ? barangay.brgy_name : barangayCode;
+        });
+    });
+</script>
+{% endblock %}
+
+<style>
+.receipt-card {
+    background: #f3f4f6;
+    border-radius: 18px;
+    box-shadow: 0 4px 24px rgba(71, 57, 54, 0.10);
+    padding: 3.5rem 2.5rem 2.5rem 2.5rem;
+    max-width: 700px;
+    margin: 3.5rem auto;
+    font-family: 'Inter', 'Montserrat', Arial, sans-serif;
+    border: 1.5px dashed #a68a64;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.receipt-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.1rem;
+    color: #473936;
+    text-align: center;
+    margin-bottom: 0.7rem;
+    letter-spacing: 1px;
+}
+.receipt-info {
+    margin-bottom: 1.2rem;
+    width: 100%;
+}
+.receipt-info p {
+    margin: 0.2rem 0;
+    font-size: 1.08rem;
+    color: #473936;
+    line-height: 1.5;
+}
+.receipt-info strong {
+    color: #a68a64;
+}
+.receipt-divider {
+    border: none;
+    border-top: 1.5px solid #e5e5e5;
+    margin: 1.2rem 0 1.2rem 0;
+}
+.receipt-items-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1.5rem;
+}
+.receipt-items-table th {
+    background: #f7f5f2;
+    color: #473936;
+    font-weight: 600;
+    padding: 0.7rem 0.5rem;
+    border-bottom: 2px solid #e5e5e5;
+    font-size: 1.05rem;
+}
+.receipt-items-table td {
+    padding: 0.6rem 0.5rem;
+    border-bottom: 1px solid #f0ece7;
+    font-size: 1.04rem;
+}
+.receipt-total-row td {
+    font-weight: bold;
+    color: #473936;
+    font-size: 1.13rem;
+    background: #f7f5f2;
+}
+.receipt-footer {
+    text-align: center;
+    margin-top: 2.2rem;
+}
+.receipt-footer p {
+    margin: 0.2rem 0;
+    color: #473936;
+    font-size: 1.08rem;
+}
+.receipt-note {
+    font-size: 0.98rem;
+    color: #a68a64;
+    margin-top: 0.5rem;
+
+}
+
+body { background: #9c2d2d !important; }
+</style> 

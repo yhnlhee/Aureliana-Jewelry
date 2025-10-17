@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+
+{% block body_class %}home-page{% endblock %}
+
+{% block title %}Aureliana Jewelry - Home{% endblock %}
+
+{% block head_styles %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}" />
+{% endblock %}
+
+{% block content %}
+<div class="hero">
+    <video class="hero-video" autoplay loop muted playsinline disablepictureinpicture controlslist="nodownload nofullscreen noremoteplayback">
+        <source src="{{ url_for('static', filename='vid/home_aureliana.mp4') }}" type="video/mp4" />
+        Your browser does not support the video tag.
+    </video>
+    <div class="hero-text">
+        <h1>AURELIANA</h1>
+        <p>JEWELRY</p>
+    </div>
+</div>
+
+<section class="shop-by-category">
+    <h2>Shop by Category</h2>
+    <div class="categories">
+        <a href="{{ url_for('ringc') }}" class="category-card">
+            <img src="{{ url_for('static', filename='Ring/RRG001.png') }}" alt="Rings" />
+            <span>Rings</span>
+        </a>
+        <a href="{{ url_for('necklacec') }}" class="category-card">
+            <img src="{{ url_for('static', filename='Necklace/NRG001.png') }}" alt="Necklaces" />
+            <span>Necklaces</span>
+        </a>
+        <a href="{{ url_for('braceletc') }}" class="category-card">
+            <img src="{{ url_for('static', filename='Bracelet/BRG001.png') }}" alt="Bracelets" />
+            <span>Bracelets</span>
+        </a>
+        <a href="{{ url_for('earringc') }}" class="category-card">
+            <img src="{{ url_for('static', filename='Earring/ERG001.png') }}" alt="Earrings" />
+            <span>Earrings</span>
+        </a>
+    </div>
+</section>
+
+<section class="featured-products">
+    <h2>Featured Collections</h2>
+    <div class="product-grid">
+        <a href="{{ url_for('necklacec') }}" class="product-card product-link">
+            <img src="{{ url_for('static', filename='Necklace/NPG005.png') }}" alt="Gold Necklace" />
+            <h3>Luxe Layered Necklace</h3>
+            <p class="product-description">Elegant layered design with premium gold finish, perfect for both casual and formal occasions.</p>
+        </a>
+        <a href="{{ url_for('ringc') }}" class="product-card product-link">
+            <img src="{{ url_for('static', filename='Ring/RPG001.png') }}" alt="Gold Ring" />
+            <h3>Minimalist Gold Ring</h3>
+            <p class="product-description">Clean, timeless design that complements any style with its understated elegance.</p>
+        </a>
+        <a href="{{ url_for('braceletc') }}" class="product-card product-link">
+            <img src="{{ url_for('static', filename='Bracelet/BPG003.png') }}" alt="Gold Bracelet" />
+            <h3>Classic Chain Bracelet</h3>
+            <p class="product-description">Sophisticated chain design that adds a touch of luxury to your everyday look.</p>
+        </a>
+        <a href="{{ url_for('earringc') }}" class="product-card product-link">
+            <img src="{{ url_for('static', filename='Earring/EPG007.png') }}" alt="Gold Earrings" />
+            <h3>Dangling Pearl Earrings</h3>
+            <p class="product-description">Graceful pearl accents with gold detailing for a feminine and refined appearance.</p>
+        </a>
+        <a href="{{ url_for('necklacec') }}" class="product-card product-link">
+            <img src="{{ url_for('static', filename='Necklace/NPRG006.png') }}" alt="Rose Gold Necklace" />
+            <h3>Rose Gold Pendant</h3>
+            <p class="product-description">Romantic rose gold pendant featuring intricate detailing and warm, flattering tones.</p>
+        </a>
+        <a href="{{ url_for('ringc') }}" class="product-card product-link">
+            <img src="{{ url_for('static', filename='Ring/RPRG002.png') }}" alt="Rose Gold Ring" />
+            <h3>Intertwined Rose Ring</h3>
+            <p class="product-description">Symbolic intertwined design representing eternal love and connection.</p>
+        </a>
+        <a href="{{ url_for('braceletc') }}" class="product-card product-link">
+            <img src="{{ url_for('static', filename='Bracelet/BPRG004.png') }}" alt="Rose Gold Bracelet" />
+            <h3>Rose Charm Bracelet</h3>
+            <p class="product-description">Delicate charm bracelet with rose gold finish, perfect for layering or wearing alone.</p>
+        </a>
+        <a href="{{ url_for('earringc') }}" class="product-card product-link">
+            <img src="{{ url_for('static', filename='Earring/EPRG008.png') }}" alt="Rose Gold Earrings" />
+            <h3>Studded Rose Earrings</h3>
+            <p class="product-description">Sparkling stud earrings with rose gold setting for a subtle yet glamorous touch.</p>
+        </a>
+    </div>
+</section>
+
+<section class="our-values">
+    <h2>Our Values</h2>
+    <div class="values-container">
+        <div class="value-item">
+            <i class="fas fa-gem"></i>
+            <h3>Quality Craftsmanship</h3>
+            <p>Each piece is meticulously crafted by skilled artisans to ensure the highest quality.</p>
+        </div>
+        <div class="value-item">
+            <i class="fas fa-leaf"></i>
+            <h3>Ethically Sourced</h3>
+            <p>We are committed to using ethically sourced materials in all of our jewelry.</p>
+        </div>
+        <div class="value-item">
+            <i class="fas fa-star"></i>
+            <h3>Timeless Design</h3>
+            <p>Our designs are timeless, meant to be cherished for generations to come.</p>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // The hamburger menu script is already in base.html
+        });
+    </script>
+{% endblock %}

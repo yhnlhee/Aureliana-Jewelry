@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+
+{% block title %}Vintage Heart Necklace - Aureliana Jewelry{% endblock %}
+
+{% block head_styles %}
+<style>
+.product-review-flex {
+  display: flex;
+  gap: 3.5rem;
+  align-items: flex-start;
+  justify-content: center;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+.product-review-flex .about-product-wrapper {
+  flex: 1 1 0;
+  max-width: 520px;
+}
+.product-review-flex .reviews-section {
+  flex: 1.2 1 0;
+  margin-top: 0;
+  padding-top: 0;
+  border-top: none;
+}
+@media (max-width: 1000px) {
+  .product-review-flex {
+    flex-direction: column;
+    gap: 2.2rem;
+  }
+  .product-review-flex .about-product-wrapper,
+  .product-review-flex .reviews-section {
+    max-width: 100%;
+  }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="product-review-flex">
+  <section class="about-section about-product-wrapper">
+    <div class="zoom-container">
+      <img src="{{ url_for('static', filename='Necklace/NG003.png') }}" alt="Vintage Heart Necklace" />
+    </div>
+    <div class="right">
+      <h1 class="title">Vintage Heart Necklace</h1>
+      <div class="price">₱8,900.00</div>
+      <p class="description">
+        A romantic gold necklace with a vintage-inspired heart pendant, blending timeless charm and modern luxury.
+      </p>
+      <div class="product-details">
+        <label>Material:</label>
+        <div class="static-label">Gold</div>
+        <!-- Size and Quantity fields removed for review-only view -->
+      </div>
+    </div>
+  </section>
+  <section class="reviews-section" id="reviews">
+    <div class="reviews-container">
+      <h2>Customer Reviews</h2>
+      {% if reviews %}
+        <div class="average-rating">
+          {% set avg = (reviews|map(attribute='rating')|sum / reviews|length) %}
+          <span style="color:#d4af37;">&#9733;</span> {{ '%.2f'|format(avg) }} / 5.0 ({{ reviews|length }} review{{ 's' if reviews|length > 1 else '' }})
+        </div>
+      {% endif %}
+      {% for review in reviews %}
+      <div class="review">
+        <div class="review-header">
+          <div class="reviewer-info">
+            <span class="reviewer-name">{{ review.anonymous and 'Anonymous' or review.user_name }}</span>
+            <div class="rating">
+              {% for i in range(1, 6) %}
+                <i class="fas fa-star{% if i > review.rating %}-o{% endif %}"></i>
+              {% endfor %}
+            </div>
+          </div>
+          <span class="review-date">
+            {% if review.created_at.strftime is defined %}
+              {{ review.created_at.strftime('%b %d, %Y %I:%M %p') }}
+            {% else %}
+              {{ review.created_at }}
+            {% endif %}
+          </span>
+        </div>
+        <p class="review-text">{{ review.comment }}</p>
+      </div>
+      {% else %}
+      <p style="color:#888;">No reviews yet. Be the first to review this product!</p>
+      {% endfor %}
+    </div>
+  </section>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{% endblock %}

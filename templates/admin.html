@@ -1,0 +1,670 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard - Aureliana Jewelry{% endblock %}
+
+{% block head_styles %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="admin-container">
+    <h1 class="serif">Admin Dashboard</h1>
+    <p class="description">Manage your jewelry business operations</p>
+    
+    <div class="admin-tabs">
+        <button class="tab-btn active" data-tab="orders">Orders</button>
+        <button class="tab-btn" data-tab="inventory">Inventory</button>
+        <button class="tab-btn" data-tab="messages">Contact Messages</button>
+        <button class="tab-btn" data-tab="clients">Clients</button>
+        <button class="tab-btn" data-tab="log">Inventory Log</button>
+    </div>
+
+    <!-- Orders Tab -->
+    <div id="orders" class="tab-content active">
+        <h3>Recent Orders</h3>
+        <div class="table-container">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Order #</th>
+                        <th>Customer</th>
+                        <th>Username</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody id="orders-table">
+                    {% if orders %}
+                        {% for order in orders %}
+                            <tr>
+                                <td>{{ order['order_number'] }}</td>
+                                <td>{{ order['client_ID'] }}</td>
+                                <td>{{ order['full_name'] }}</td>
+                                <td>₱{{ "%.2f"|format(order['total_amount']) }}</td>
+                                <td><span class="status-{{ order['status']|lower }}">{{ order['status'] }}</span></td>
+                                <td>{{ order['created_at'] }}</td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr><td colspan="6">No orders found</td></tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Inventory Tab -->
+    <div id="inventory" class="tab-content">
+        <h3>Inventory Management</h3>
+        <div class="table-container">
+            <table class="admin-table" id="inventory-table">
+                <thead>
+                    <tr>
+                        <th>Image</th>
+                        <th>SKU</th>
+                        <th>Name</th>
+                        <th>Category</th>
+                        <th>Stock</th>
+                        <th>Stock Status</th>
+                        <th>Price</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if inventory %}
+                        {% for item in inventory %}
+                            <tr>
+                                <td><img src="{{ url_for('static', filename=item['image']) }}" alt="{{ item['name'] }}" class="admin-product-img"></td>
+                                <td>{{ item['product_code'] }}</td>
+                                <td>{{ item['name'] }}</td>
+                                <td>{{ item['category'] }}</td>
+                                <td>{{ item['current_stock'] }}</td>
+                                <td>
+                                    {% if item['current_stock'] == 0 %}
+                                        <span class="status-badge out-of-stock">Out of Stock</span>
+                                    {% elif item['current_stock'] < 10 %}
+                                        <span class="status-badge low-stock">Low on Stock</span>
+                                    {% else %}
+                                        <span class="status-badge in-stock">In Stock</span>
+                                    {% endif %}
+                                </td>
+                                <td>₱{{ "{:,}".format(item['price']) }}.00</td>
+                                <td>
+                                    <button class="btn btn-primary" data-item='{{ item|tojson|escape }}' onclick="openEditModal(JSON.parse(this.dataset.item))">Edit</button>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr><td colspan="8">No inventory found</td></tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <!-- Messages Tab -->
+    <div id="messages" class="tab-content">
+        <h3>Contact Messages</h3>
+        <div class="table-container">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Message</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if feedback %}
+                        {% for item in feedback %}
+                            <tr>
+                                <td>{{ item[1] }}</td>
+                                <td>{{ item[2] }}</td>
+                                <td>{{ item[3] }}</td>
+                                <td>{{ item[4] }}</td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr><td colspan="4">No messages found</td></tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Clients Tab -->
+    <div id="clients" class="tab-content">
+        <h3>Registered Clients</h3>
+        <div class="table-container">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Role</th>
+                        <th>Last Login</th>
+                    </tr>
+                </thead>
+                <tbody id="clients-table">
+                    {% if clients %}
+                        {% for client in clients %}
+                            <tr>
+                                <td>{{ client[0] }}</td>
+                                <td>{{ client[1] }}</td>
+                                <td>{{ client[2] }}</td>
+                                <td>{{ client[3] }}</td>
+                                <td>{{ client[5] }}</td>
+                                <td>{{ client[7] }}</td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr><td colspan="6">No clients found</td></tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Inventory Log Tab -->
+    <div id="log" class="tab-content">
+        <h3>Inventory Change Log</h3>
+        <div class="table-container">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Timestamp</th>
+                        <th>Product</th>
+                        <th>Action</th>
+                        <th>Quantity</th>
+                        <th>Stock Change</th>
+                        <th>User</th>
+                        <th>Order ID</th>
+                    </tr>
+                </thead>
+                <tbody id="inventory-log-table">
+                    <tr><td colspan="7">Loading inventory logs...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Stock Update Modal -->
+<div id="stockModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <span class="close" onclick="closeStockModal()">&times;</span>
+        <h3>Update Stock</h3>
+        <form id="stockUpdateForm" method="POST" action="{{ url_for('update_stock') }}" class="admin-form" onsubmit="return handleStockSubmit(event)">
+            <input type="hidden" name="inventory_ID" id="stockInventoryID">
+            <div class="form-group">
+                <label for="stockProductName">Product:</label>
+                <input type="text" id="stockProductName" readonly>
+            </div>
+            <div class="form-group">
+                <label for="stockCurrentStock">Current Stock:</label>
+                <input type="number" id="stockCurrentStock" readonly>
+            </div>
+            <div class="form-group">
+                <label for="newStock">New Stock:</label>
+                <input type="number" id="newStock" name="new_stock" min="0" required>
+            </div>
+            <div class="button-container">
+                <button type="submit" class="btn btn-success">Update Stock</button>
+                <button type="button" onclick="closeStockModal()" class="btn btn-secondary">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Edit Inventory Modal -->
+<div id="editModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <span class="close" onclick="closeEditModal()">&times;</span>
+        <h3>Edit Inventory Item</h3>
+        <form id="editInventoryForm" method="POST" action="{{ url_for('update_inventory') }}" class="admin-form" onsubmit="return handleEditSubmit(event)">
+            <input type="hidden" name="inventory_ID" id="editInventoryID">
+            <div class="form-group">
+                <label for="editProductCode">SKU:</label>
+                <input type="text" id="editProductCode" name="product_code">
+            </div>
+            <div class="form-group">
+                <label for="editName">Name:</label>
+                <input type="text" id="editName" name="name">
+            </div>
+            <div class="form-group">
+                <label for="editCategory">Category:</label>
+                <input type="text" id="editCategory" name="category">
+            </div>
+            <div class="form-group">
+                <label for="editStock">Stock:</label>
+                <input type="number" id="editStock" name="current_stock" min="0">
+            </div>
+            <div class="form-group">
+                <label for="editPrice">Price:</label>
+                <input type="number" id="editPrice" name="price" min="0" step="0.01">
+            </div>
+            <div class="form-group">
+                <label for="editImage">Image Filename:</label>
+                <input type="text" id="editImage" name="image">
+            </div>
+            <div class="button-container">
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+                <button type="button" onclick="closeEditModal()" class="btn btn-secondary">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block footer %}
+<footer style="background: var(--primary-color); color: #fff; padding: 0; margin: 0; border: none;">
+    <div class="footer-content" style="background: var(--primary-color); color: #fff; border: none; box-shadow: none; min-height: 40px; display: flex; flex-direction: column; justify-content: flex-end; align-items: center;">
+        <div style="flex:1;"></div>
+        <div style="width:100%; text-align:center; font-size:1.35rem; font-weight:600; letter-spacing:0.5px; padding: 18px 0 8px 0;">
+            &copy; Aureliana Jewelry. All rights reserved.
+        </div>
+    </div>
+</footer>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script>
+    // Global showTab function
+    window.showTab = function(tabName) {
+        console.log('Showing tab:', tabName);
+        
+        // Hide all tab contents
+        document.querySelectorAll('.tab-content').forEach(content => {
+            content.classList.remove('active');
+        });
+        
+        // Remove active from all tab buttons
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        
+        // Show selected tab content
+        const tabContent = document.getElementById(tabName);
+        if (tabContent) {
+            tabContent.classList.add('active');
+            console.log('Activated tab content:', tabName);
+        } else {
+            console.error('Tab content not found:', tabName);
+        }
+        
+        // Set active on the clicked tab button
+        const tabButton = document.querySelector('.tab-btn[data-tab="' + tabName + '"]');
+        if (tabButton) {
+            tabButton.classList.add('active');
+            console.log('Activated tab button:', tabName);
+        } else {
+            console.error('Tab button not found for:', tabName);
+        }
+    };
+
+    function openEditModal(item) {
+        console.log('openEditModal called with item:', item);
+        document.getElementById('editInventoryID').value = item.inventory_ID;
+        document.getElementById('editProductCode').value = item.product_code;
+        document.getElementById('editName').value = item.name;
+        document.getElementById('editCategory').value = item.category;
+        document.getElementById('editStock').value = item.current_stock;
+        document.getElementById('editPrice').value = item.price;
+        document.getElementById('editImage').value = item.image;
+        document.getElementById('editModal').style.display = 'flex';
+        console.log('Modal opened and populated');
+    }
+
+    function closeEditModal() {
+        document.getElementById('editModal').style.display = 'none';
+    }
+
+    function openStockModal(item) {
+        document.getElementById('stockInventoryID').value = item.inventory_ID;
+        document.getElementById('stockProductName').value = item.name;
+        document.getElementById('stockCurrentStock').value = item.current_stock;
+        document.getElementById('newStock').value = item.current_stock;
+        document.getElementById('stockModal').style.display = 'flex';
+    }
+
+    function closeStockModal() {
+        document.getElementById('stockModal').style.display = 'none';
+    }
+
+    function updateInventoryTable() {
+        fetch('/api/inventory')
+            .then(response => response.json())
+            .then(inventory => {
+                const tbody = document.getElementById('inventory-table');
+                if (!tbody) return;
+                tbody.innerHTML = '';
+                if (inventory && inventory.length > 0) {
+                    inventory.forEach(item => {
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                            <td><img src="/static/${item.image}" alt="${item.name}" class="admin-product-img"></td>
+                            <td>${item.product_code}</td>
+                            <td>${item.name}</td>
+                            <td>${item.category}</td>
+                            <td>${item.current_stock}</td>
+                            <td>${item.current_stock == 0 ? '<span class=\'status-badge out-of-stock\'>Out of Stock</span>' : item.current_stock < 10 ? '<span class=\'status-badge low-stock\'>Low on Stock</span>' : '<span class=\'status-badge in-stock\'>In Stock</span>'}</td>
+                            <td>₱${item.price.toLocaleString()}.00</td>
+                            <td>
+                                <button class="btn btn-primary" onclick='openEditModal(${JSON.stringify(item).replace(/\"/g, '&quot;')})'>Edit</button>
+                            </td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                } else {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = '<td colspan="8">No inventory found</td>';
+                    tbody.appendChild(tr);
+                }
+                // Update client-side stock cache if present
+                if (window.inventoryStock) {
+                    inventory.forEach(item => {
+                        window.inventoryStock[item.inventory_ID] = item.current_stock;
+                    });
+                }
+            });
+    }
+
+    function updateInventoryLogTable() {
+        fetch('/api/inventory_logs')
+            .then(response => response.json())
+            .then(logs => {
+                const tbody = document.getElementById('inventory-log-table');
+                if (!tbody) return;
+                tbody.innerHTML = '';
+                if (logs && logs.length > 0) {
+                    logs.forEach(log => {
+                        const tr = document.createElement('tr');
+                        const stockChange = log.new_stock - log.previous_stock;
+                        const stockChangeText = stockChange > 0 ? `+${stockChange}` : stockChange.toString();
+                        const stockChangeClass = stockChange > 0 ? 'stock-increase' : stockChange < 0 ? 'stock-decrease' : '';
+                        
+                        tr.innerHTML = `
+                            <td>${new Date(log.timestamp).toLocaleString()}</td>
+                            <td><strong>${log.name}</strong><br><small>${log.product_code} (${log.category})</small></td>
+                            <td><span class="action-${log.action.toLowerCase().replace(/\s+/g, '-')}">${log.action}</span></td>
+                            <td>${log.quantity}</td>
+                            <td class="${stockChangeClass}">${stockChangeText}</td>
+                            <td>${log.user_name}</td>
+                            <td>${log.order_ID ? `#${log.order_ID}` : '-'}</td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                } else {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = '<td colspan="7">No inventory changes recorded yet</td>';
+                    tbody.appendChild(tr);
+                }
+            });
+    }
+
+    // Initialize when DOM is loaded
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('Admin page loaded, initializing tabs...');
+        
+        // Add click event listeners to all tab buttons
+        document.querySelectorAll('.tab-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const tabName = this.getAttribute('data-tab');
+                showTab(tabName);
+                
+                // Load data for specific tabs
+                if (tabName === 'log') {
+                    updateInventoryLogTable();
+                }
+            });
+        });
+        
+        // Set default tab
+        showTab('orders');
+        
+        // Socket connection is already initialized in base.html
+        
+        socket.on('new_order', function(data) {
+            // Fetch new orders and update the orders table
+            fetch('/api/orders')
+                .then(response => response.json())
+                .then(orders => {
+                    const tbody = document.getElementById('orders-table');
+                    if (!tbody) return;
+                    tbody.innerHTML = '';
+                    if (orders && orders.length > 0) {
+                        orders.forEach(order => {
+                            const tr = document.createElement('tr');
+                            tr.innerHTML = `
+                                <td>${order.order_number}</td>
+                                <td>${order.client_ID}</td>
+                                <td>${order.full_name}</td>
+                                <td>₱${order.total_amount.toFixed(2)}</td>
+                                <td><span class="status-${order.status.toLowerCase()}">${order.status}</span></td>
+                                <td>${order.created_at}</td>
+                            `;
+                            tbody.appendChild(tr);
+                        });
+                    } else {
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = '<td colspan="6">No orders found</td>';
+                        tbody.appendChild(tr);
+                    }
+                });
+        });
+
+        socket.on('new_user', function(data) {
+            // Fetch new clients and update the clients table
+            fetch('/api/clients')
+                .then(response => response.json())
+                .then(clients => {
+                    const tbody = document.getElementById('clients-table');
+                    if (!tbody) return;
+                    tbody.innerHTML = '';
+                    if (clients && clients.length > 0) {
+                        clients.forEach(client => {
+                            const tr = document.createElement('tr');
+                            tr.innerHTML = `
+                                <td>${client.client_ID}</td>
+                                <td>${client.full_name || ''}</td>
+                                <td>${client.email}</td>
+                                <td>${client.phone || ''}</td>
+                                <td>${client.role || ''}</td>
+                                <td>${client.last_login || ''}</td>
+                            `;
+                            tbody.appendChild(tr);
+                        });
+                    } else {
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = '<td colspan="6">No clients found</td>';
+                        tbody.appendChild(tr);
+                    }
+                });
+        });
+
+        socket.on('inventory_updated', function(data) {
+            console.log('Inventory updated:', data);
+            showInventoryNotification(data);
+            
+            // Update relevant tables
+            if (document.getElementById('inventory').classList.contains('active')) {
+                updateInventoryTable();
+            }
+            if (document.getElementById('log').classList.contains('active')) {
+                updateInventoryLogTable();
+            }
+        });
+    });
+
+    function showInventoryNotification(data) {
+        const notification = document.createElement('div');
+        notification.className = 'inventory-notification';
+        
+        let message = '';
+        let icon = '';
+        let bgColor = '';
+        
+        if (data.action === 'stock_update') {
+            if (data.current_stock === 0) {
+                message = `<strong>${data.name}</strong> is now out of stock!`;
+                icon = 'fas fa-exclamation-triangle';
+                bgColor = '#f8d7da';
+            } else if (data.current_stock < 5) {
+                message = `<strong>${data.name}</strong> stock is running low (${data.current_stock} left)!`;
+                icon = 'fas fa-exclamation-triangle';
+                bgColor = '#fff3cd';
+            } else {
+                message = `<strong>${data.name}</strong> stock updated to ${data.current_stock}!`;
+                icon = 'fas fa-check-circle';
+                bgColor = '#d4edda';
+            }
+        } else if (data.action === 'inventory_update') {
+            message = `<strong>${data.name}</strong> information has been updated!`;
+            icon = 'fas fa-sync-alt';
+            bgColor = '#d1ecf1';
+        }
+        
+        notification.innerHTML = `
+            <div class="notification-content" style="background: ${bgColor};">
+                <i class="${icon}"></i>
+                <span>${message}</span>
+                <span class="notification-action">${data.action}</span>
+            </div>
+        `;
+        document.body.appendChild(notification);
+        setTimeout(() => {
+            notification.classList.add('fade-out');
+            setTimeout(() => notification.remove(), 500);
+        }, 5000);
+    }
+
+    function handleEditSubmit(event) {
+        event.preventDefault();
+        
+        // Prevent multiple submissions
+        const form = event.target;
+        const submitButton = form.querySelector('button[type="submit"]');
+        if (submitButton.disabled) {
+            return false;
+        }
+        
+        submitButton.disabled = true;
+        submitButton.textContent = 'Saving...';
+        
+        const formData = new FormData(form);
+        
+        // Log form data for debugging
+        for (let [key, value] of formData.entries()) {
+            console.log(`${key}: ${value}`);
+        }
+        
+        console.log('Making fetch request...');
+        
+        fetch(form.action, {
+            method: 'POST',
+            body: formData,
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        })
+        .then(res => {
+            console.log('Response received');
+            console.log('Response status:', res.status);
+            console.log('Response headers:', res.headers);
+            if (!res.ok) {
+                console.error('Response not ok:', res.status, res.statusText);
+                throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+            }
+            return res.text().then(text => {
+                console.log('Raw response text:', text);
+                try {
+                    return JSON.parse(text);
+                } catch (e) {
+                    console.error('JSON parse error:', e);
+                    throw new Error('Invalid JSON response');
+                }
+            });
+        })
+        .then(data => {
+            console.log('Response data:', data);
+            if (data.success) {
+                closeEditModal();
+                updateInventoryTable();
+                updateInventoryLogTable();
+            } else {
+                alert(data.message || 'Error updating inventory.');
+            }
+        })
+        .catch(err => {
+            console.error('Fetch error details:', err);
+            console.error('Error name:', err.name);
+            console.error('Error message:', err.message);
+            console.error('Error stack:', err.stack);
+            alert('Error: ' + err.message);
+        })
+        .finally(() => {
+            // Re-enable the submit button
+            submitButton.disabled = false;
+            submitButton.textContent = 'Save Changes';
+        });
+        
+        return false;
+    }
+    
+    function handleStockSubmit(event) {
+        event.preventDefault();
+        
+        // Prevent multiple submissions
+        const form = event.target;
+        const submitButton = form.querySelector('button[type="submit"]');
+        if (submitButton.disabled) {
+            return false;
+        }
+        
+        submitButton.disabled = true;
+        submitButton.textContent = 'Updating...';
+        
+        fetch(form.action, {
+            method: 'POST',
+            body: new FormData(form),
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
+        })
+        .then(res => {
+            console.log('Response status:', res.status);
+            console.log('Response headers:', res.headers);
+            if (!res.ok) throw new Error('Network error');
+            return res.text().then(text => {
+                console.log('Raw response text:', text);
+                try {
+                    return JSON.parse(text);
+                } catch (e) {
+                    console.error('JSON parse error:', e);
+                    throw new Error('Invalid JSON response');
+                }
+            });
+        })
+        .then(data => {
+            if (data.success) {
+                closeStockModal();
+                updateInventoryTable();
+                updateInventoryLogTable();
+            } else {
+                alert(data.message || 'Error updating stock.');
+            }
+        })
+        .catch(err => {
+            alert('Error: ' + err.message);
+        })
+        .finally(() => {
+            // Re-enable the submit button
+            submitButton.disabled = false;
+            submitButton.textContent = 'Update Stock';
+        });
+        
+        return false;
+    }
+</script>
+{% endblock %} 

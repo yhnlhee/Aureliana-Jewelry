@@ -1,0 +1,776 @@
+/* Colors & Reset */
+:root {
+  --primary: #7a6c5d;
+  --primary-light: #a89d92;
+  --primary-dark: #5c5247;
+  --accent: #d4c9bc;
+  --light: #f8f6f3;
+  --dark: #333333;
+  --text: #ffffff; /* This is declared, but body text is #3e3a31 */
+  --border: #e0d9d0;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Montserrat', sans-serif;
+  background: linear-gradient(to bottom, #faf8f5, #f5f2ed);
+  color: #3e3a31; /* Overrides --text for general body content */
+  line-height: 1.6;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header styles - Fixed spacing */
+header {
+  background-color: #3e3a31;
+  padding: 15px 0; /* Default desktop padding */
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+}
+
+.header-container {
+  max-width: 1800px;
+  margin: 0 auto;
+  padding: 0 30px; /* Default desktop content padding */
+}
+
+nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo img {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.logo:hover img {
+  transform: rotate(10deg);
+}
+
+.logo-text {
+  font-family: 'Playfair Display', serif;
+  font-size: 24px;
+  font-weight: 700;
+  color: #cfc2aa;
+  user-select: none;
+  white-space: nowrap;
+}
+
+.nav-links {
+  display: flex; /* Default desktop display */
+  list-style: none;
+  gap: 30px;
+}
+
+.nav-links a {
+  color: #f0eade;
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: 500;
+  transition: color 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+  padding: 5px 0;
+}
+
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: #cfc2aa;
+  transition: width 0.3s ease;
+}
+
+.nav-links a:hover::after,
+.nav-links a.active::after {
+  width: 100%;
+}
+
+.nav-links a:hover {
+  color: #cfc2aa;
+}
+
+/* Hamburger Menu Styles (Desktop default: hidden) */
+.hamburger-menu {
+  display: none; /* Hidden by default on desktop */
+  flex-direction: column;
+  justify-content: space-around;
+  width: 30px;
+  height: 25px;
+  cursor: pointer;
+  z-index: 20; /* Above nav links when active */
+}
+
+.hamburger-menu .bar {
+  width: 100%;
+  height: 3px;
+  background-color: #f0eade; /* Color of the bars */
+  transition: all 0.3s ease;
+}
+
+/* Animation for hamburger to cross */
+.hamburger-menu.active .bar:nth-child(1) {
+  transform: translateY(11px) rotate(45deg);
+}
+
+.hamburger-menu.active .bar:nth-child(2) {
+  opacity: 0;
+}
+
+.hamburger-menu.active .bar:nth-child(3) {
+  transform: translateY(-11px) rotate(-45deg);
+}
+
+/* Removed .icon-navbar as it's not present in the HTML provided */
+
+/* Main content with improved spacing */
+.container {
+  max-width: 1400px;
+  margin: 40px auto 60px;
+  padding: 0 20px;
+  flex: 1;
+}
+
+.collection-header {
+  text-align: center;
+  padding: 40px 0 60px;
+  position: relative;
+}
+
+.collection-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120px;
+  height: 4px;
+  background: linear-gradient(to right, #cfc2aa, #b1a47f, #cfc2aa);
+  border-radius: 2px;
+}
+
+.collection-header h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: 48px;
+  color: #3e3a31;
+  margin-bottom: 15px;
+  letter-spacing: 1px;
+  position: relative;
+  display: inline-block;
+}
+
+.collection-header h1::after {
+  content: '';
+  position: absolute;
+  bottom: -15px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 3px;
+  background: #cfc2aa;
+}
+
+.subtitle {
+  font-size: 18px;
+  color: #8a7f6d;
+  margin-bottom: 40px;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Filter Buttons */
+.filter-buttons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 40px;
+  margin-top: 40px;
+  position: relative;
+}
+
+.filter-btn {
+  width: 150px;
+  height: 200px;
+  border-radius: 75px;
+  border: none;
+  background: transparent;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.4s ease;
+  overflow: hidden;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+  transform: translateY(0);
+  padding: 0;
+}
+
+.filter-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.3);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 1;
+}
+
+.filter-btn:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.25);
+}
+
+.filter-btn:hover::before {
+  opacity: 1;
+}
+
+.btn-content {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  z-index: 2;
+}
+
+.btn-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  border-radius: 75px;
+  transition: transform 0.5s ease;
+  object-fit: cover;
+}
+
+.filter-btn:hover .btn-image {
+  transform: scale(1.1);
+}
+
+.filter-btn span {
+  color: white;
+  font-weight: 600;
+  font-size: 18px;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+  margin-bottom: 20px;
+  position: relative;
+  z-index: 2;
+  transition: all 0.3s ease;
+}
+
+.filter-btn:hover span {
+  transform: scale(1.1);
+  text-shadow: 0 2px 5px rgba(0, 0, 0, 1);
+}
+
+/* Button separator */
+.button-separator {
+  width: 1px;
+  height: 120px;
+  background: linear-gradient(to bottom,
+      transparent 0%,
+      #cfc2aa 20%,
+      #cfc2aa 80%,
+      transparent 100%);
+  opacity: 0.7;
+}
+
+/* Section Title */
+.section-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 36px;
+  color: #3e3a31;
+  text-align: center;
+  margin: 70px 0 40px;
+  position: relative;
+  padding-bottom: 20px;
+}
+
+.section-title::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 3px;
+  background: #cfc2aa;
+  border-radius: 2px;
+}
+
+/* Jewelry Grid - Three Column Layout with spacing */
+.jewelry-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 40px;
+  margin: 40px 0 60px;
+}
+
+.jewelry-item {
+  background: white;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+  transition: all 0.4s ease;
+  position: relative;
+}
+
+.jewelry-item:hover {
+  transform: translateY(-15px);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+}
+
+.jewelry-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 5px;
+  background: linear-gradient(to right, #cfc2aa, #b1a47f);
+  opacity: 0.8;
+}
+
+.image-container {
+  height: 400px;
+  overflow: hidden;
+  position: relative;
+}
+
+.jewelry-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.7s ease;
+}
+
+.jewelry-item:hover .jewelry-img {
+  transform: scale(1.05);
+}
+
+.jewelry-info {
+  padding: 25px;
+  text-align: center;
+}
+
+.jewelry-name {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: #3e3a31;
+  font-family: 'Playfair Display', serif;
+}
+
+.jewelry-price {
+  font-size: 18px;
+  color: #8a7f6d;
+  margin-bottom: 20px;
+  font-weight: 500;
+}
+
+.view-details {
+  display: inline-block;
+  padding: 10px 28px;
+  background: #3e3a31;
+  color: white;
+  text-decoration: none;
+  border-radius: 30px;
+  font-size: 15px;
+  transition: all 0.3s ease;
+  border: 2px solid #3e3a31;
+  font-weight: 500;
+}
+
+.view-details:hover {
+  background: transparent;
+  color: #3e3a31;
+}
+
+/* Section spacing */
+.jewelry-section {
+  margin-bottom: 80px;
+}
+
+/* Footer with improved spacing */
+footer {
+  background-color: #3e3a31;
+  color: #f0eade;
+  padding: 60px 0 0;
+  font-size: 14px;
+  font-weight: 400;
+  font-family: 'Montserrat', sans-serif;
+  width: 100%;
+  margin-top: auto;
+}
+
+.footer-container {
+  max-width: 1800px;
+  margin: 0 auto;
+  padding: 0 30px;
+}
+
+.footer-content {
+  padding-bottom: 40px;
+}
+
+.newsletter {
+  max-width: 700px;
+  margin: 0 auto 60px;
+  text-align: center;
+  padding: 0 20px;
+}
+
+.newsletter h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 28px;
+  margin-bottom: 15px;
+  color: #cfc2aa;
+}
+
+.newsletter p {
+  margin-bottom: 25px;
+  color: #ddd6c9;
+  line-height: 1.7;
+}
+
+.newsletter form {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.newsletter input[type="email"] {
+  padding: 14px 20px;
+  border: none;
+  border-radius: 30px;
+  flex-grow: 1;
+  min-width: 250px;
+  font-size: 15px;
+  transition: box-shadow 0.3s ease;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+.newsletter input[type="email"]::placeholder {
+  color: #bbb3a1;
+}
+
+.newsletter input[type="email"]:focus {
+  outline: none;
+  box-shadow: 0 0 8px 3px #cfc2aa;
+}
+
+.newsletter button {
+  background-color: #cfc2aa;
+  border: none;
+  padding: 14px 32px;
+  border-radius: 30px;
+  font-weight: 700;
+  color: #3e3a31;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  flex-shrink: 0;
+}
+
+.newsletter button:hover,
+.newsletter button:focus {
+  background-color: #b1a47f;
+  outline: none;
+}
+
+.footer-links {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  column-gap: 40px;
+  padding: 0 20px;
+  margin-top: 40px;
+  margin-bottom: 40px;
+  max-width: 1400px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.footer-links h4 {
+  font-size: 16px;
+  margin-bottom: 15px;
+  font-weight: 700;
+  color: #cfc2aa;
+  position: relative;
+  padding-bottom: 10px;
+}
+
+.footer-links h4::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 40px;
+  height: 2px;
+  background: #cfc2aa;
+}
+
+.footer-links ul {
+  padding: 0;
+  list-style: none;
+}
+
+.footer-links ul li {
+  margin-bottom: 12px;
+}
+
+.footer-links ul li a {
+  color: #ddd6c9;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  display: block;
+  padding: 3px 0;
+  font-size: 15px;
+}
+
+.footer-links ul li a:hover,
+.footer-links ul li a:focus {
+  color: #fff;
+  transform: translateX(5px);
+}
+
+.footer-bottom {
+  text-align: center;
+  padding: 25px 0;
+  border-top: 1px solid #5a5345;
+  font-size: 13px;
+  color: #bbb3a1;
+  background-color: #3e3a31;
+  width: 100%;
+}
+
+/* Responsive design */
+@media (max-width: 1300px) {
+  .jewelry-grid {
+    gap: 30px;
+  }
+
+  .image-container {
+    height: 350px;
+  }
+}
+
+@media (max-width: 1100px) {
+  .jewelry-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .image-container {
+    height: 380px;
+  }
+
+  .footer-links {
+    grid-template-columns: repeat(3, 1fr);
+    row-gap: 30px;
+  }
+}
+
+@media (max-width: 992px) {
+  .jewelry-grid {
+    gap: 25px;
+  }
+
+  .image-container {
+    height: 350px;
+  }
+
+  /* Desktop nav-links gap adjusted for smaller screens */
+  .nav-links {
+    gap: 20px;
+  }
+
+  .filter-btn {
+    width: 130px;
+    height: 180px;
+  }
+}
+
+@media (max-width: 768px) {
+  body {
+    padding-top: 0px; /* Adjust for mobile header height when sticky */
+  }
+
+  /* Header adjustments for mobile hamburger positioning */
+  header {
+    padding: 15px 0px; /* Remove horizontal padding from header */
+    position: relative; /* Make header a positioning context for absolute positioning */
+  }
+
+  /* Adjust nav padding on mobile to create space for logo and hamburger */
+  nav {
+    padding: 0 15px; /* Add desired spacing from edges to content inside nav */
+    width: 100%; /* Ensure nav takes full width of header */
+  }
+
+  .logo {
+    margin-left: 0; /* Reset desktop margin, use nav padding instead */
+  }
+
+  /* Hamburger Menu Styles for Mobile */
+  .hamburger-menu {
+    display: flex; /* Show hamburger on mobile */
+    position: absolute; /* Position absolutely within the header */
+    right: 15px; /* Adjust this value for desired spacing from bezel */
+    top: 50%; /* Center vertically */
+    transform: translateY(-50%); /* Adjust for vertical centering */
+    z-index: 100; /* Ensure it's above other elements if needed */
+  }
+
+  /* Mobile navigation links (hidden by default) */
+  .nav-links {
+    display: none; /* Hide nav links by default on mobile */
+    flex-direction: column;
+    width: 100%;
+    position: absolute;
+    top: 75px; /* Adjust based on header height (approx 45px logo + padding) */
+    left: 0;
+    background-color: #3e3a31;
+    border-top: 1px solid #5a5345;
+    padding: 20px 0;
+    gap: 15px;
+    text-align: center;
+    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+    transform: translateY(-100%); /* Start off-screen */
+    opacity: 0;
+    z-index: 15;
+  }
+
+  /* Show nav links when active (controlled by JS toggling .nav-links-container.active) */
+  .nav-links-container.active .nav-links {
+    display: flex;
+    transform: translateY(0); /* Slide in */
+    opacity: 1;
+  }
+
+  /* Removed .menu-toggle as it's not used with current JS */
+
+
+  .jewelry-grid {
+    grid-template-columns: 1fr;
+    max-width: 550px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .image-container {
+    height: 450px;
+  }
+
+  .footer-links {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .collection-header h1 {
+    font-size: 40px;
+  }
+
+  .section-title {
+    font-size: 32px;
+  }
+
+  .filter-buttons {
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+  }
+
+  .button-separator {
+    width: 120px; /* Adjusted for larger buttons */
+    height: 1px;
+    background: linear-gradient(to right,
+        transparent 0%,
+        #cfc2aa 20%,
+        #cfc2aa 80%,
+        transparent 100%);
+    opacity: 0.7;
+  }
+}
+
+@media (max-width: 576px) {
+  .jewelry-grid {
+    gap: 30px;
+  }
+
+  .image-container {
+    height: 350px;
+  }
+
+  .footer-links {
+    grid-template-columns: 1fr;
+  }
+
+  /* Removed .header-container as it's not relevant for header padding on mobile */
+
+  .logo-text {
+    font-size: 20px;
+  }
+
+  .collection-header {
+    padding: 30px 0 40px;
+  }
+
+  .collection-header h1 {
+    font-size: 36px;
+  }
+
+  .footer-container {
+    padding: 0 15px;
+  }
+
+  .filter-btn {
+    width: 120px;
+    height: 160px;
+  }
+
+  .jewelry-section {
+    margin-bottom: 60px;
+  }
+
+  .newsletter form {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .newsletter input[type="email"] {
+    width: 100%;
+  }
+}

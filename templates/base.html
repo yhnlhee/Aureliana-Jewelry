@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Aureliana Jewelry{% endblock %}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+    {% block head_styles %}{% endblock %}
+</head>
+<body class="{% block body_class %}{% endblock %}">
+    <header>
+        <nav>
+            <div class="logo">
+                <a href="{{ url_for('home') }}">
+                    <img src="{{ url_for('static', filename='logo/aurelianalogo.png') }}" alt="Aureliana Jewelry Logo" />
+                </a>
+                <span class="logo-text">Aureliana Jewelry</span>
+            </div>
+            <div class="hamburger-menu">
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+            </div>
+            <div class="nav-links-container">
+                <ul class="nav-links">
+                    {% if session.get('role') == 'admin' %}
+                        <li><a href="{{ url_for('admin_dashboard') }}" class="{{ 'active' if request.endpoint == 'admin_dashboard' else '' }}"><i class="fas fa-cog"></i> Admin</a></li>
+                        <li><a href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                    {% else %}
+                        <li><a href="{{ url_for('home') }}" class="{{ 'active' if request.endpoint == 'home' else '' }}"><i class="fas fa-home"></i> Home</a></li>
+                        {% if session.get('role') != 'admin' and request.endpoint != 'home' %}
+                        <li>
+                            <a href="{{ url_for('cart_page') }}" class="{{ 'active' if request.endpoint == 'cart_page' else '' }}">
+                                <i class="fas fa-shopping-cart"></i> Cart <span id="cart-count" class="cart-count" style="display: none;">0</span>
+                            </a>
+                        </li>
+                        {% endif %}
+                        {% if session.user_id %}
+                            <li><a href="{{ url_for('account') }}" class="{{ 'active' if request.endpoint == 'account' else '' }}"><i class="fas fa-user"></i> Account</a></li>
+                            <li><a href="{{ url_for('logout') }}" onclick="clearCartOnLogout()"><i class="fas fa-sign-out-alt"></i> Logout </a></li>
+                        {% else %}
+                            <li><a href="{{ url_for('login') }}" class="{{ 'active' if request.endpoint == 'login' else '' }}"><i class="fas fa-user"></i> Account</a></li>
+                        {% endif %}
+                    {% endif %}
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages">
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        {% if category == 'success' %}
+                            <i class="fas fa-check-circle"></i>
+                        {% elif category == 'error' %}
+                            <i class="fas fa-exclamation-circle"></i>
+                        {% endif %}
+                        {{ message }}
+                    </div>
+                {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+        {% block content %}{% endblock %}
+    </main>
+
+    {% block footer %}
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Collections</h3>
+                <ul>
+                    <li><a href="{{ url_for('necklacec') }}">Necklaces</a></li>
+                    <li><a href="{{ url_for('ringc') }}">Rings</a></li>
+                    <li><a href="{{ url_for('braceletc') }}">Bracelets</a></li>
+                    <li><a href="{{ url_for('earringc') }}">Earrings</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Company</h3>
+                <ul>
+                    <li><a href="{{ url_for('about') }}">About Us</a></li>
+                    <li><a href="{{ url_for('our_values') }}">Our Values</a></li>
+                    <li><a href="{{ url_for('contact') }}">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Legal</h3>
+                <ul>
+                    <li><a href="{{ url_for('terms') }}">Terms of Service</a></li>
+                    <li><a href="{{ url_for('privacy') }}">Privacy Policy</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Connect</h3>
+                <div class="social-links">
+                    <a href="https://www.facebook.com/SoldevillaOnline/"><i class="fab fa-facebook"></i></a>
+                    <a href="https://www.instagram.com/aureliana.ph/"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Aureliana Jewelry. All rights reserved.</p>
+        </div>
+    </footer>
+    {% endblock %}
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const hamburger = document.querySelector('.hamburger-menu');
+            const navLinksContainer = document.querySelector('.nav-links-container');
+
+            if(hamburger && navLinksContainer) {
+                hamburger.addEventListener('click', function () {
+                    hamburger.classList.toggle('active');
+                    navLinksContainer.classList.toggle('active');
+                });
+            }
+
+            // Auto-hide flash messages
+            const flashMessages = document.querySelectorAll('.flash-messages .alert');
+            flashMessages.forEach(function(message) {
+                setTimeout(function() {
+                    message.style.opacity = '0';
+                    message.style.transform = 'translateX(100%)';
+                    setTimeout(() => message.remove(), 500);
+                }, 5000); // 5 seconds
+            });
+        });
+
+        function clearCartOnLogout() {
+            // Clear cart from localStorage when logging out
+            localStorage.removeItem('cart');
+            // Call API to clear cart on server side
+            fetch('/api/clear_cart')
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Cart cleared on logout');
+                })
+                .catch(error => {
+                    console.error('Error clearing cart:', error);
+                });
+        }
+    </script>
+    {% block scripts %}
+    <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+    <script src="{{ url_for('static', filename='js/cart.js') }}"></script>
+    <script>
+        // Global Socket.IO connection for real-time updates
+        let socket = io();
+        
+        // Listen for inventory updates from admin dashboard
+        socket.on('inventory_updated', function(data) {
+            console.log('Global inventory update:', data);
+            
+            // Update cart if on cart page
+            if (typeof loadCart === 'function') {
+                loadCart();
+            }
+            
+            // Update product stock displays
+            if (typeof updateProductStockDisplay === 'function') {
+                updateProductStockDisplay(data.inventory_ID, data.current_stock);
+            }
+            
+            // Show notification to user
+            if (typeof showAddedToCartPrompt === 'function') {
+                let action = 'inventory_update';
+                if (data.action === 'stock_update') {
+                    if (data.current_stock === 0) {
+                        action = 'out_of_stock';
+                    } else if (data.current_stock < 5) {
+                        action = 'stock_limit';
+                    } else {
+                        action = 'updated';
+                    }
+                }
+                showAddedToCartPrompt(data.name, action);
+            }
+        });
+    </script>
+    {% endblock %}
+</body>
+</html>

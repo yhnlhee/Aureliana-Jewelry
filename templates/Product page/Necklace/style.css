@@ -1,0 +1,836 @@
+/* Reset & Base */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    color: #3e3a31;
+    background-color: #fff;
+    line-height: 1.6;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+a:hover,
+a:focus {
+    color: #cfc2aa;
+    outline: none;
+}
+
+ul {
+    list-style: none;
+}
+
+/* Logo with text side by side */
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    /* margin-left will be adjusted in media query for mobile */
+}
+
+.logo img {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.logo-text {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: #cfc2aa;
+    user-select: none;
+    white-space: nowrap;
+}
+
+/* Header */
+header {
+    background-color: #3e3a31;
+    border-bottom: 1px solid #bbb;
+    padding: 15px 30px; /* Default desktop padding */
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    width: 100%; /* Ensure full width */
+}
+
+nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    /* Removed default padding from here for mobile control in media query */
+}
+
+.nav-links {
+    display: flex; /* Default desktop display */
+    align-items: center;
+    gap: 25px;
+    font-weight: 600;
+    font-size: 15px;
+}
+
+.nav-links li a {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 5px;
+    color: #f0eade;
+    border-bottom: 2px solid transparent;
+    transition: border-color 0.3s ease, color 0.3s ease;
+    white-space: nowrap;
+}
+
+.nav-links li a:hover,
+.nav-links li a.active {
+    border-color: #cfc2aa;
+    color: #cfc2aa;
+}
+
+/* Hamburger Menu Styles (Desktop default: hidden) */
+.hamburger-menu {
+    display: none; /* Hidden by default on desktop */
+    flex-direction: column;
+    justify-content: space-around;
+    width: 30px;
+    height: 25px; /* Adjusted height for 3 bars + spacing */
+    cursor: pointer;
+    z-index: 20; /* Above nav links when active */
+}
+
+.hamburger-menu .bar {
+    width: 100%;
+    height: 3px;
+    background-color: #f0eade; /* Color of the bars */
+    transition: all 0.3s ease;
+}
+
+/* Animation for hamburger to cross */
+.hamburger-menu.active .bar:nth-child(1) {
+    transform: translateY(9px) rotate(45deg);
+}
+
+.hamburger-menu.active .bar:nth-child(2) {
+    opacity: 0;
+}
+
+.hamburger-menu.active .bar:nth-child(3) {
+    transform: translateY(-9px) rotate(-45deg);
+}
+
+/* Main about section (or product detail section) */
+.about-main { /* This class name suggests it's from another page's HTML structure */
+    max-width: 1800px;
+    margin: 60px auto 100px;
+    padding: 0 20px;
+}
+
+.about-section { /* This class name suggests it's from another page's HTML structure */
+    max-width: 1500px;
+    margin: 0 auto 60px;
+    padding: 0 20px;
+    text-align: left;
+}
+
+.about-section h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 38px;
+    color: #3e3a31;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.about-section p {
+    font-size: 18px;
+    color: #5b574a;
+    line-height: 1.7;
+    text-align: justify;
+    margin-bottom: 20px;
+}
+
+.about-section blockquote {
+    font-style: italic;
+    color: #5b574a;
+    margin-top: 20px;
+    padding: 15px 25px;
+    background-color: #f1eadf;
+    border-left: 6px solid #cfc2aa;
+    border-radius: 8px;
+    text-align: center;
+    font-size: 16px;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Members section (from your previous about.css, included here for completeness) */
+.members-section {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 20px;
+    text-align: center;
+}
+
+.members-section h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 30px;
+    margin-bottom: 40px;
+    color: #3e3a31;
+}
+
+.members-container {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 30px;
+}
+
+.member-card {
+    background-color: #cfc2aa;
+    border-radius: 15px;
+    padding: 15px;
+    width: calc(20% - 24px); /* Default desktop width for 5 cards */
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    margin-bottom: 150px;
+}
+
+.member-card:hover,
+.member-card:focus-within {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0,0,0,0.25);
+    outline: none;
+}
+
+.member-card img {
+    width: 100%;
+    border-radius: 15px;
+    object-fit: cover;
+    margin-bottom: 10px;
+    height: 200px;
+}
+
+.member-card h3 {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: 18px;
+    color: #3e3a31;
+}
+
+
+/* Footer */
+footer {
+    background-color: #3e3a31;
+    color: #f0eade;
+    padding: 60px 30px 0px;
+    font-size: 14px;
+    font-weight: 400;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.newsletter {
+    max-width: 600px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.newsletter h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    margin-bottom: 15px;
+    color: #cfc2aa;
+}
+
+.newsletter p {
+    margin-bottom: 25px;
+    color: #ddd6c9;
+}
+
+.newsletter form {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.newsletter input[type="email"] {
+    padding: 12px 18px;
+    border: none;
+    border-radius: 30px;
+    width: 260px;
+    max-width: 100%;
+    font-size: 15px;
+    transition: box-shadow 0.3s ease;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+.newsletter input[type="email"]:focus {
+    outline: none;
+    box-shadow: 0 0 5px 2px #cfc2aa;
+}
+
+.newsletter button {
+    background-color: #cfc2aa;
+    border: none;
+    padding: 12px 28px;
+    border-radius: 30px;
+    font-weight: 700;
+    color: #3e3a31;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.newsletter button:hover,
+.newsletter button:focus {
+    background-color: #b1a47f;
+    outline: none;
+}
+
+.footer-links {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    column-gap: 50px;
+    padding-left: 110px; /* Adjust this to control how far "Necklaces" starts */
+    padding-right: 30px; /* A bit less right-padding to pull "Company" in */
+    margin-top: 40px;
+    margin-bottom: 40px;
+}
+
+.footer-links h4 {
+    font-size: 16px;
+    margin-bottom: 15px;
+    font-weight: 700;
+    color: #cfc2aa;
+    position: relative;
+    padding-bottom: 10px;
+}
+
+.footer-links h4::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 40px;
+    height: 2px;
+    background: #cfc2aa;
+}
+
+.footer-links ul {
+    padding: 0;
+    list-style: none;
+}
+
+.footer-links ul li {
+    margin-bottom: 8px;
+}
+
+.footer-links ul li a {
+    color: #ddd6c9;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.footer-links ul li a:hover,
+.footer-links ul li a:focus {
+    color: #fff;
+    outline: none;
+}
+
+.footer-bottom {
+    text-align: center;
+    padding-top: 20px;
+    border-top: 1px solid #5a5345;
+    font-size: 13px;
+    color: #bbb3a1;
+}
+
+/* Product Page Specific Styles */
+.about-product-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 60px;
+    max-width: 1200px;
+    margin: 80px auto;
+    padding: 0 20px;
+}
+
+.about-product-wrapper img {
+    width: 100%;
+    max-width: 500px;
+    height: auto;
+    object-fit: cover;
+    border-radius: 16px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.right {
+    flex: 1 1 400px;
+    max-width: 500px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    color: #3e3a31;
+}
+
+.title {
+    font-family: 'Playfair Display', serif;
+    font-size: 36px;
+    font-weight: 700;
+    color: #3e3a31;
+}
+
+.price {
+    font-size: 24px;
+    font-weight: bold;
+    color: #cfc2aa;
+}
+
+.description {
+    font-size: 17px;
+    line-height: 1.7;
+    color: #5b574a;
+}
+
+.product-details label {
+    display: block;
+    font-weight: 600;
+    margin-top: 12px;
+    margin-bottom: 4px;
+    font-size: 15px;
+}
+
+select.static-label { /* This targets select elements with class static-label */
+    background-color: #f5f1e8;
+    color: #3e3a31;
+    padding: 10px;
+    border: 1px solid #cfc2aa;
+    border-radius: 6px;
+    font-size: 15px;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    cursor: pointer;
+    width: 100%; /* Ensure it's responsive */
+    max-width: 240px; /* Limit width */
+    margin-bottom: 10px;
+}
+
+.dropdown-select { /* This targets generic dropdown selects */
+    width: 100%;
+    padding: 10px 14px;
+    font-size: 15px;
+    border-radius: 8px;
+    background-color: #f5f1e8;
+    border: 1px solid #ccc;
+    color: #3e3a31;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    cursor: pointer;
+}
+
+.quantity-control {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 5px;
+}
+
+.qty-btn {
+    padding: 8px 16px;
+    background-color: #cfc2aa;
+    color: #fff;
+    border: none;
+    font-size: 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.qty-btn:hover {
+    background-color: #b1a47f;
+}
+
+#quantity {
+    width: 60px;
+    padding: 6px;
+    font-size: 16px;
+    text-align: center;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+
+.btn {
+    background-color: #3e3a31;
+    color: #fff;
+    padding: 14px 30px;
+    border: none;
+    border-radius: 30px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 20px;
+    align-self: start;
+    transition: background-color 0.3s ease;
+}
+
+.btn:hover {
+    background-color: #5b574a;
+}
+
+/* Remove number input arrows */
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type=number] {
+    -moz-appearance: textfield;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    /* Header adjustments for mobile hamburger positioning */
+    header {
+        padding: 15px 0px; /* Remove horizontal padding from header */
+        position: relative; /* Make header a positioning context for absolute positioning */
+    }
+
+    /* Adjust nav padding on mobile to create space for logo and hamburger */
+    nav {
+        padding: 0 15px; /* Add desired spacing from edges to content inside nav */
+        width: 100%; /* Ensure nav takes full width of header */
+    }
+
+    .logo {
+        margin-left: 0; /* Reset desktop margin, use nav padding instead */
+    }
+
+    /* Hamburger Menu Styles for Mobile */
+    .hamburger-menu {
+        display: flex; /* Show hamburger on mobile */
+        position: absolute; /* Position absolutely within the header */
+        right: 15px; /* Adjust this value for desired spacing from bezel */
+        top: 50%; /* Center vertically */
+        transform: translateY(-50%); /* Adjust for vertical centering */
+        z-index: 100; /* Ensure it's above other elements if needed */
+    }
+
+    /* Mobile navigation links (hidden by default) */
+    .nav-links-container { /* This needs to wrap your ul.nav-links in HTML */
+        display: none; /* Hidden by default on mobile */
+        flex-direction: column;
+        width: 100%;
+        position: absolute;
+        top: 75px; /* Adjust based on header height (approx 45px logo + padding) */
+        left: 0;
+        background-color: #3e3a31;
+        border-top: 1px solid #5a5345;
+        padding: 20px 0;
+        text-align: center;
+        transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+        transform: translateY(-100%); /* Start off-screen */
+        opacity: 0;
+        z-index: 15;
+        gap: 15px; /* Spacing between stacked links */
+        font-size: 14px; /* Adjust font size for mobile links */
+    }
+
+    /* Show nav links when active (controlled by JS toggling .nav-links-container.active) */
+    .nav-links-container.active {
+        display: flex;
+        transform: translateY(0); /* Slide in */
+        opacity: 1;
+    }
+
+    /* Styles for the actual links inside the mobile menu */
+    .nav-links {
+        flex-direction: column; /* Stack links vertically */
+        flex-wrap: nowrap; /* Prevent wrapping if too many links */
+        gap: 15px; /* Ensure this is set for ul.nav-links */
+        font-size: 14px; /* Ensure this is set for ul.nav-links */
+    }
+
+    .nav-links li {
+        margin: 10px 0; /* Adjust margin for stacked links */
+    }
+
+    .nav-links li a {
+        padding: 10px 0;
+        display: block; /* Make links full width for easier tapping */
+        color: #f0eade; /* Ensure link color is visible on dark background */
+    }
+
+    /* Product page specific mobile adjustments */
+    .about-product-wrapper {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 30px; /* Reduce gap for mobile */
+        margin: 40px auto; /* Adjust margin for mobile */
+        padding: 0 15px; /* Adjust padding for mobile */
+    }
+
+    .about-product-wrapper img {
+        max-width: 90%; /* Adjust max-width of image for mobile */
+    }
+
+    .right {
+        flex: none; /* Allow it to shrink/grow based on content */
+        max-width: 90%; /* Adjust max-width of info block for mobile */
+        width: 100%; /* Take full width within its max-width */
+    }
+
+    .right label,
+    .static-label,
+    .description {
+        text-align: center;
+    }
+
+    .title {
+        font-size: 28px; /* Smaller title for mobile */
+    }
+
+    .price {
+        font-size: 20px; /* Smaller price for mobile */
+    }
+
+    .description {
+        font-size: 16px; /* Smaller description for mobile */
+    }
+
+    .btn {
+        align-self: center; /* Center button on mobile */
+        width: 100%; /* Make button full width */
+        max-width: 300px; /* Optional: limit max width of button */
+    }
+
+    /* Footer adjustments for mobile */
+    footer {
+        padding: 40px 15px 0px; /* Adjust footer padding for mobile */
+    }
+
+    .newsletter form {
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .newsletter input[type="email"],
+    .newsletter button {
+        width: 100%; /* Make newsletter inputs/buttons full width */
+    }
+
+    .footer-links {
+        grid-template-columns: repeat(2, 1fr); /* Example: 2 columns for footer links */
+        column-gap: 20px;
+        row-gap: 20px;
+        padding: 0 15px; /* Adjust padding */
+    }
+
+    .footer-links h4::after {
+        left: 50%;
+        transform: translateX(-50%); /* Center underline for mobile */
+    }
+
+    /* Member card responsive (from previous input, check if needed on this page) */
+    .member-card {
+        width: calc(50% - 20px);
+        margin-bottom: 30px; /* Adjust margin as needed */
+    }
+}
+
+@media (max-width: 576px) {
+    /* Further adjustments for very small screens */
+    .about-product-wrapper {
+        gap: 20px;
+        margin: 30px auto;
+        padding: 0 10px;
+    }
+
+    .title {
+        font-size: 24px;
+    }
+
+    .price {
+        font-size: 18px;
+    }
+
+    .description {
+        font-size: 15px;
+    }
+
+    /* .right styling already adjusts well with `flex: none` and `width: 100%` */
+
+    .dropdown-select, #quantity {
+        font-size: 14px;
+        padding: 8px;
+    }
+
+    .qty-btn {
+        padding: 6px 12px;
+        font-size: 16px;
+    }
+
+    .btn {
+        padding: 12px 20px;
+        font-size: 16px;
+    }
+
+    /* Member card responsive for very small screens */
+    .member-card {
+        width: 100%;
+    }
+
+    .footer-links {
+        grid-template-columns: 1fr; /* Stack footer links vertically */
+        text-align: center; /* Center text when stacked */
+    }
+
+    .footer-links h4::after {
+        left: 50%;
+        transform: translateX(-50%); /* Ensure underline is centered when stacked */
+    }
+
+    .newsletter input[type="email"],
+    .newsletter button {
+        max-width: 250px; /* Constrain max width for very small screens if desired */
+    }
+}
+
+/* Reviews Section */
+.reviews-section {
+  margin-top: 60px;
+  padding: 40px 0;
+  border-top: 1px solid #eaeaea;
+}
+
+.reviews-section h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 28px;
+  margin-bottom: 30px;
+  color: #333;
+  text-align: center;
+}
+
+.reviews-container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.review {
+  padding: 20px;
+  margin-bottom: 30px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+}
+
+.review-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.reviewer-info {
+  display: flex;
+  align-items: center;
+}
+
+.reviewer-name {
+  font-weight: bold;
+  margin-right: 15px;
+  color: #333;
+}
+
+.rating {
+  color: #ffc107;
+}
+
+.review-date {
+  color: #777;
+  font-size: 14px;
+}
+
+.review-text {
+  color: #555;
+  line-height: 1.6;
+}
+
+/* Review Form */
+.add-review {
+  background-color: #f9f9f9;
+  padding: 30px;
+  border-radius: 8px;
+  margin-top: 40px;
+}
+
+.add-review h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 22px;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #333;
+}
+
+.form-group input[type="text"],
+.form-group textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.star-rating {
+  font-size: 24px;
+  color: #ddd;
+  cursor: pointer;
+}
+
+.star-rating i {
+  margin-right: 5px;
+  transition: color 0.2s;
+}
+
+.star-rating i:hover,
+.star-rating i.active {
+  color: #ffc107;
+}
+
+.submit-review-btn {
+  background-color: #b8860b;
+  color: white;
+  border: none;
+  padding: 12px 25px;
+  font-size: 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.submit-review-btn:hover {
+  background-color: #a5770a;
+}

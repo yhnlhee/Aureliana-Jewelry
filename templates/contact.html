@@ -1,0 +1,307 @@
+{% extends "base.html" %}
+
+{% block title %}Contact Us - Aureliana Jewelry{% endblock %}
+
+{% block head_styles %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/contact.css') }}" />
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Playfair+Display&display=swap" rel="stylesheet" />
+{% endblock %}
+
+{% block content %}
+<main class="contact-main">
+    <div class="contact-container">
+        <div class="contact-header">
+            <h1>Contact Us</h1>
+            <p>We'd love to hear from you. Whether you have a question about our collections, need assistance with an order, or just want to share your thoughts, we're here to help.</p>
+        </div>
+        
+        <div class="contact-content">
+            <div class="contact-form-section">
+                <h2>Send Us a Message</h2>
+                <form id="contact-form" method="POST" action="{{ url_for('submit_feedback') }}">
+                    <div class="form-group">
+                        <label for="name">Full Name</label>
+                        <input type="text" id="name" name="name" value="{{ user_data.full_name if user_data else '' }}" required {{ 'readonly' if user_data else '' }} />
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" name="email" value="{{ user_data.email if user_data else '' }}" required {{ 'readonly' if user_data else '' }} />
+                    </div>
+                    <div class="form-group">
+                        <label for="message">Message</label>
+                        <textarea id="message" name="message" rows="6" placeholder="Please share your thoughts, questions, or feedback with us..." required></textarea>
+                    </div>
+                    <button type="submit" class="submit-btn">Send Message</button>
+                </form>
+            </div>
+            
+            <div class="contact-info-section">
+                <h2>Our Information</h2>
+                <div class="info-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <p> 445V+GCG, A. Bonifacio St, Matandang Balara, Santo Tomas, 4234 Batangas</p>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-phone"></i>
+                    <p>(123) 456-7890</p>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-envelope"></i>
+                    <p>support@aurelianajewelry.com</p>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-clock"></i>
+                    <p>Monday - Friday: 9:00 AM - 6:00 PM</p>
+                </div>
+                <div class="social-media">
+                    <a href="https://www.facebook.com/SoldevillaOnline/"><i class="fab fa-facebook-f"></i></a>
+                    <a href="https://www.instagram.com/aureliana.ph/"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- Success Popup Modal -->
+<div id="success-popup" class="popup-overlay" style="display: none;">
+    <div class="popup-content">
+        <div class="popup-header">
+            <i class="fas fa-check-circle success-icon"></i>
+            <h3>Message Sent Successfully!</h3>
+        </div>
+        <div class="popup-body">
+            <p id="popup-message">Thank you for your feedback! We appreciate your message and will get back to you soon.</p>
+        </div>
+        <div class="popup-footer">
+            <button id="close-popup" class="popup-btn">Close</button>
+        </div>
+    </div>
+</div>
+
+<!-- Error Popup Modal -->
+<div id="error-popup" class="popup-overlay" style="display: none;">
+    <div class="popup-content error-popup">
+        <div class="popup-header">
+            <i class="fas fa-exclamation-triangle error-icon"></i>
+            <h3>Error</h3>
+        </div>
+        <div class="popup-body">
+            <p id="error-message">Please fill out all fields.</p>
+        </div>
+        <div class="popup-footer">
+            <button id="close-error-popup" class="popup-btn">Close</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const contactForm = document.getElementById('contact-form');
+    const successPopup = document.getElementById('success-popup');
+    const errorPopup = document.getElementById('error-popup');
+    const closePopup = document.getElementById('close-popup');
+    const closeErrorPopup = document.getElementById('close-error-popup');
+    
+    // Get user data from form fields
+    const nameField = document.getElementById('name');
+    const emailField = document.getElementById('email');
+    const userFullName = nameField.value;
+    const userEmail = emailField.value;
+    
+    contactForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const formData = new FormData(contactForm);
+        
+        fetch('{{ url_for("submit_feedback") }}', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Show success popup
+                document.getElementById('popup-message').textContent = data.message;
+                successPopup.style.display = 'flex';
+                contactForm.reset();
+                
+                // Pre-fill name and email if user is logged in
+                if (userFullName && userEmail) {
+                    nameField.value = userFullName;
+                    emailField.value = userEmail;
+                }
+            } else {
+                // Show error popup
+                document.getElementById('error-message').textContent = data.message;
+                errorPopup.style.display = 'flex';
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            document.getElementById('error-message').textContent = 'An error occurred. Please try again.';
+            errorPopup.style.display = 'flex';
+        });
+    });
+    
+    // Close popup handlers
+    closePopup.addEventListener('click', function() {
+        successPopup.style.display = 'none';
+    });
+    
+    closeErrorPopup.addEventListener('click', function() {
+        errorPopup.style.display = 'none';
+    });
+    
+    // Close popup when clicking outside
+    successPopup.addEventListener('click', function(e) {
+        if (e.target === successPopup) {
+            successPopup.style.display = 'none';
+        }
+    });
+    
+    errorPopup.addEventListener('click', function(e) {
+        if (e.target === errorPopup) {
+            errorPopup.style.display = 'none';
+        }
+    });
+});
+</script>
+
+<style>
+.popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    animation: fadeIn 0.3s ease-out;
+}
+
+.popup-content {
+    background: white;
+    border-radius: 16px;
+    padding: 0;
+    max-width: 450px;
+    width: 90%;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    animation: slideIn 0.3s ease-out;
+    overflow: hidden;
+}
+
+.popup-header {
+    background: linear-gradient(135deg, #4CAF50, #45a049);
+    color: white;
+    padding: 24px;
+    text-align: center;
+    position: relative;
+}
+
+.error-popup .popup-header {
+    background: linear-gradient(135deg, #f44336, #d32f2f);
+}
+
+.success-icon {
+    font-size: 3rem;
+    margin-bottom: 12px;
+    display: block;
+}
+
+.error-icon {
+    font-size: 3rem;
+    margin-bottom: 12px;
+    display: block;
+}
+
+.popup-header h3 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.popup-body {
+    padding: 24px;
+    text-align: center;
+}
+
+.popup-body p {
+    margin: 0;
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: #333;
+}
+
+.popup-footer {
+    padding: 16px 24px 24px;
+    text-align: center;
+}
+
+.popup-btn {
+    background: linear-gradient(135deg, #4CAF50, #45a049);
+    color: white;
+    border: none;
+    padding: 12px 32px;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 120px;
+}
+
+.popup-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(76, 175, 80, 0.3);
+}
+
+.error-popup .popup-btn {
+    background: linear-gradient(135deg, #f44336, #d32f2f);
+}
+
+.error-popup .popup-btn:hover {
+    box-shadow: 0 8px 20px rgba(244, 67, 54, 0.3);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateY(-50px) scale(0.9);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+}
+
+/* Style for readonly fields */
+input[readonly] {
+    background-color: #f8f9fa;
+    color: #6c757d;
+    cursor: not-allowed;
+}
+
+input[readonly]:focus {
+    outline: none;
+    border-color: #ced4da;
+    box-shadow: none;
+}
+</style>
+{% endblock %}

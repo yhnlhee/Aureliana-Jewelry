@@ -1,0 +1,189 @@
+{% extends "base.html" %}
+
+{% block title %}Checkout - Aureliana Jewelry{% endblock %}
+
+{% block head_styles %}
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='cart/checkout.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Playfair+Display&display=swap" rel="stylesheet" />
+{% endblock %}
+
+{% block content %}
+
+    <main class="container mx-auto mt-12 p-4">
+        <div style="display: flex; justify-content: center;">
+        </div>
+        <div id="checkout-container" class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <!-- Order Summary -->
+            <div class="md:col-span-2">
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h2 class="text-xl font-semibold mb-4">Order Summary</h2>
+                    <div id="checkout-product-list">
+                        <!-- Products will be dynamically inserted here -->
+                    </div>
+                    <div class="mt-6 border-t pt-4">
+                        <div class="flex justify-between text-lg font-medium">
+                            <span>Subtotal</span>
+                            <span id="subtotal-price">₱0.00</span>
+                        </div>
+                        <div class="flex justify-between text-lg font-medium mt-2">
+                            <span>Shipping</span>
+                            <span>₱50.00</span> <!-- Example shipping fee -->
+                        </div>
+                        <div class="flex justify-between text-2xl font-bold mt-4">
+                            <span>Total</span>
+                            <span id="total-price">₱0.00</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Shipping Information -->
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h2 class="text-xl font-semibold mb-4">Shipping Information</h2>
+                <form id="shipping-form" method="POST" action="{{ url_for('place_order') }}">
+                    <div class="mb-4">
+                        <label for="fullName" class="block text-gray-700">Full Name</label>
+                        <input type="text" id="fullName" name="fullName" class="w-full border rounded px-3 py-2 mt-1" required>
+                    </div>
+                    <div class="mb-4">
+                        <label for="region" class="block text-gray-700">Region</label>
+                        <select id="region" name="region" class="w-full border rounded px-3 py-2 mt-1" required></select>
+                    </div>
+                    <div class="mb-4">
+                        <label for="province" class="block text-gray-700">Province</label>
+                        <select id="province" name="province" class="w-full border rounded px-3 py-2 mt-1" required disabled></select>
+                    </div>
+                    <div class="mb-4">
+                        <label for="city" class="block text-gray-700">City/Municipality</label>
+                        <select id="city" name="city" class="w-full border rounded px-3 py-2 mt-1" required disabled></select>
+                    </div>
+                    <div class="mb-4">
+                        <label for="barangay" class="block text-gray-700">Barangay</label>
+                        <select id="barangay" name="barangay" class="w-full border rounded px-3 py-2 mt-1" required disabled></select>
+                    </div>
+                    <div class="mb-4">
+                        <label for="address_details" class="block text-gray-700">Street/House/Unit (optional)</label>
+                        <input type="text" id="address_details" name="address_details" class="w-full border rounded px-3 py-2 mt-1">
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-gray-700 mb-2">Payment Method</label>
+                        <div class="flex flex-col gap-2">
+                            <label><input type="radio" name="payment_method" value="Credit Card" required> Credit Card</label>
+                            <label><input type="radio" name="payment_method" value="GCash"> GCash</label>
+                            <label><input type="radio" name="payment_method" value="Cash on Delivery"> Cash on Delivery</label>
+                        </div>
+                    </div>
+                    <div class="mb-4" id="credit-card-fields" style="display:none;">
+                        <label for="cc_number" class="block text-gray-700">Card Number</label>
+                        <input type="text" id="cc_number" name="cc_number" class="w-full border rounded px-3 py-2 mt-1">
+                        <label for="cc_expiry" class="block text-gray-700 mt-2">Expiry Date</label>
+                        <input type="text" id="cc_expiry" name="cc_expiry" class="w-full border rounded px-3 py-2 mt-1" placeholder="MM/YY">
+                        <label for="cc_cvc" class="block text-gray-700 mt-2">CVC</label>
+                        <input type="text" id="cc_cvc" name="cc_cvc" class="w-full border rounded px-3 py-2 mt-1">
+                    </div>
+                    <div class="mb-4" id="gcash-fields" style="display:none;">
+                        <label for="gcash_phone" class="block text-gray-700">GCash Phone Number</label>
+                        <input type="text" id="gcash_phone" name="gcash_phone" class="w-full border rounded px-3 py-2 mt-1">
+                        <label for="gcash_pin" class="block text-gray-700 mt-2">GCash PIN</label>
+                        <input type="password" id="gcash_pin" name="gcash_pin" class="w-full border rounded px-3 py-2 mt-1">
+                    </div>
+                    <input type="hidden" id="itemsToCheckoutInput" name="itemsToCheckout">
+                    <button type="submit" id="placeOrderButton" class="mt-6 w-full bg-shopee-orange text-white font-bold py-3 px-6 rounded-lg">Place Order</button>
+                </form>
+            </div>
+        </div>
+    </main>
+{% endblock %}
+
+{% block scripts %}
+    <script src="{{ url_for('static', filename='js/address-autofill.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const productList = document.getElementById('checkout-product-list');
+            const subtotalPriceEl = document.getElementById('subtotal-price');
+            const totalPriceEl = document.getElementById('total-price');
+            const shippingCost = 50.00;
+
+            const itemsToCheckout = JSON.parse(localStorage.getItem('itemsToCheckout'));
+
+            if (itemsToCheckout && itemsToCheckout.length > 0) {
+                let subtotal = 0;
+                itemsToCheckout.forEach(item => {
+                    const itemElement = document.createElement('div');
+                    itemElement.className = 'flex items-center justify-between py-4 border-b';
+                    itemElement.innerHTML = `
+                        <div class="flex items-center">
+                            <img src="${item.image}" alt="${item.name}" class="w-16 h-16 rounded-md object-cover mr-4">
+                            <div>
+                                <p class="font-semibold">${item.name}</p>
+                                <p class="text-sm text-gray-600">Quantity: ${item.quantity}</p>
+                            </div>
+                        </div>
+                        <span class="font-semibold">₱${(item.price * item.quantity).toFixed(2)}</span>
+                    `;
+                    productList.appendChild(itemElement);
+                    subtotal += item.price * item.quantity;
+                });
+
+                subtotalPriceEl.textContent = `₱${subtotal.toFixed(2)}`;
+                totalPriceEl.textContent = `₱${(subtotal + shippingCost).toFixed(2)}`;
+            } else {
+                productList.innerHTML = '<p>Your cart is empty.</p>';
+            }
+
+            // Autofill shipping info if user is logged in
+            fetch('/api/user_info')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.logged_in) {
+                        document.getElementById('fullName').value = data.full_name || '';
+                        document.getElementById('address_details').value = data.address_details || '';
+                        // Autofill GCash phone number if available
+                        if (data.phone) {
+                            document.getElementById('gcash_phone').value = data.phone;
+                        }
+                        // Wait for address dropdowns to load, then set values
+                        setTimeout(() => {
+                            if (data.region) document.getElementById('region').value = data.region;
+                            document.getElementById('region').dispatchEvent(new Event('change'));
+                            setTimeout(() => {
+                                if (data.province) document.getElementById('province').value = data.province;
+                                document.getElementById('province').dispatchEvent(new Event('change'));
+                                setTimeout(() => {
+                                    if (data.city) document.getElementById('city').value = data.city;
+                                    document.getElementById('city').dispatchEvent(new Event('change'));
+                                    setTimeout(() => {
+                                        if (data.barangay) document.getElementById('barangay').value = data.barangay;
+                                    }, 400);
+                                }, 400);
+                            }, 400);
+                        }, 400);
+                    }
+                });
+
+            // Address autofill logic placeholder (to be implemented with JSON data)
+            // Example: fetch('/static/json/province.json').then(...)
+
+            // Payment method conditional fields
+            const paymentRadios = document.querySelectorAll('input[name="payment_method"]');
+            const ccFields = document.getElementById('credit-card-fields');
+            const gcashFields = document.getElementById('gcash-fields');
+            paymentRadios.forEach(radio => {
+                radio.addEventListener('change', function() {
+                    ccFields.style.display = this.value === 'Credit Card' ? '' : 'none';
+                    gcashFields.style.display = this.value === 'GCash' ? '' : 'none';
+                });
+            });
+            // Store selected items in hidden input for backend
+            document.getElementById('itemsToCheckoutInput').value = localStorage.getItem('itemsToCheckout') || '';
+        });
+    </script>
+{% endblock %}
+
+<style>
+    .bg-shopee-orange { background-color: #473936; }
+</style>
+

@@ -1,0 +1,649 @@
+{% extends "base.html" %}
+
+{% block title %}My Account - Aureliana Jewelry{% endblock %}
+
+{% block head_styles %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/account.css') }}">
+    <style>
+    .leave-review-btn {
+        background: linear-gradient(135deg, #d4af37, #b8860b);
+        color: #fff;
+        border: none;
+        border-radius: 12px;
+        padding: 10px 20px;
+        font-size: 0.95rem;
+        font-weight: 600;
+        cursor: pointer;
+        margin-left: 10px;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+        position: relative;
+        overflow: hidden;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    .leave-review-btn:hover {
+        background: linear-gradient(135deg, #b8860b, #8b6914);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
+    }
+    .leave-review-btn:active {
+        transform: translateY(0);
+        box-shadow: 0 2px 10px rgba(212, 175, 55, 0.3);
+    }
+    .leave-review-btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: left 0.5s;
+    }
+    .leave-review-btn:hover::before {
+        left: 100%;
+    }
+    #review-modal {
+        display: none;
+        position: fixed;
+        top: 0; left: 0; width: 100vw; height: 100vh;
+        background: rgba(0,0,0,0.6);
+        z-index: 1000;
+        align-items: center; justify-content: center;
+        backdrop-filter: blur(5px);
+    }
+    #review-modal .modal-content {
+        background: linear-gradient(135deg, #fff 0%, #f8f6f3 100%);
+        padding: 50px 60px;
+        border-radius: 24px;
+        max-width: 700px;
+        width: 90%;
+        margin: 20px auto;
+        position: relative;
+        box-shadow: 0 25px 80px rgba(71, 57, 54, 0.25);
+        font-family: 'Montserrat', sans-serif;
+        font-size: 1.1rem;
+        border: 3px solid #d4af37;
+        animation: modalSlideIn 0.4s ease-out;
+    }
+    #review-modal h3 {
+        font-size: 2.2rem;
+        color: #b8860b;
+        margin-bottom: 30px;
+        text-align: center;
+        letter-spacing: 1px;
+        font-family: 'Playfair Display', serif;
+        text-shadow: 0 2px 4px rgba(184, 134, 11, 0.1);
+    }
+    #review-modal label {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #473936;
+        margin-bottom: 8px;
+        display: block;
+    }
+    #review-modal textarea {
+        min-height: 120px;
+        font-size: 1.1rem;
+        padding: 15px;
+        border: 2px solid #e6c8a3;
+        border-radius: 12px;
+        resize: vertical;
+        transition: all 0.3s ease;
+    }
+    #review-modal textarea:focus {
+        outline: none;
+        border-color: #d4af37;
+        box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+    }
+    #review-modal button[type="submit"] {
+        font-size: 1.2rem;
+        padding: 18px 0;
+        border-radius: 12px;
+        width: 100%;
+        margin-top: 25px;
+        background: linear-gradient(135deg, #d4af37, #b8860b);
+        color: white;
+        border: none;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        box-shadow: 0 8px 25px rgba(212, 175, 55, 0.3);
+    }
+    #review-modal button[type="submit"]:hover {
+        background: linear-gradient(135deg, #b8860b, #8b6914);
+        transform: translateY(-2px);
+        box-shadow: 0 12px 35px rgba(212, 175, 55, 0.4);
+    }
+    #review-modal button[type="submit"]:active {
+        transform: translateY(0);
+    }
+    .star-rating {
+        font-size: 2rem;
+        color: #e6c8a3;
+        cursor: pointer;
+        margin: 15px 0;
+        display: flex;
+        gap: 8px;
+        justify-content: center;
+    }
+    .star-rating .star {
+        color: #e6c8a3;
+        transition: all 0.3s ease;
+        text-shadow: 0 2px 4px rgba(230, 200, 163, 0.3);
+    }
+    .star-rating .star.selected,
+    .star-rating .star.hovered {
+        color: #d4af37;
+        transform: scale(1.1);
+        text-shadow: 0 4px 8px rgba(212, 175, 55, 0.4);
+    }
+    #close-review-modal {
+        position: absolute;
+        top: 20px;
+        right: 25px;
+        background: none;
+        border: none;
+        font-size: 2.5rem;
+        color: #b8860b;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+    }
+    #close-review-modal:hover {
+        background: rgba(184, 134, 11, 0.1);
+        transform: rotate(90deg);
+    }
+    .review-form-group {
+        margin-bottom: 25px;
+    }
+    .review-form-group label {
+        margin-bottom: 10px;
+    }
+    .anonymous-checkbox {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-top: 15px;
+    }
+    .anonymous-checkbox input[type="checkbox"] {
+        width: 20px;
+        height: 20px;
+        accent-color: #d4af37;
+    }
+    @keyframes modalSlideIn {
+        from {
+            opacity: 0;
+            transform: translateY(-50px) scale(0.9);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+    .order-action-group {
+        display: flex;
+        gap: 10px;
+        margin-top: 10px;
+    }
+    .order-action-btn {
+        min-width: 150px;
+        max-width: 180px;
+        width: 170px;
+        display: inline-block;
+        text-align: center;
+        padding: 10px 0;
+        font-size: 1rem;
+        border-radius: 6px;
+        font-weight: 600;
+        margin-right: 0;
+    }
+    .btn-view-reviews {
+        display: inline-block;
+        margin-top: 8px;
+        background: #d4af37;
+        color: #fff;
+        border: none;
+        border-radius: 7px;
+        padding: 8px 18px;
+        font-size: 1.05rem;
+        font-weight: 600;
+        text-align: center;
+        cursor: pointer;
+        transition: background 0.2s;
+        box-shadow: 0 2px 8px rgba(212,175,55,0.08);
+        text-decoration: none;
+    }
+    .btn-view-reviews:hover {
+        background: #b8860b;
+        color: #fff;
+    }
+    </style>
+{% endblock %}
+
+{% block content %}
+<section class="account-container">
+    <div class="account-box">
+        <h1 class="serif">My Account</h1>
+        
+        <!-- Centered Welcome Section -->
+        <div class="welcome-section" style="text-align: center; margin: 30px 0; padding: 20px; background: linear-gradient(135deg, #f8f6f3 0%, #fff 100%); border-radius: 15px; box-shadow: 0 4px 15px rgba(212, 175, 55, 0.1); border: 2px solid #e6c8a3;">
+            <h3 style="color: #b8860b; font-size: 1.8rem; margin-bottom: 10px; font-family: 'Playfair Display', serif;">Welcome back, {{ user_data.full_name }}!</h3>
+            {% if user_data.last_login %}
+            <p style="color: #666; font-size: 1rem; margin: 0;">(Last login: {{ user_data.last_login }})</p>
+            {% endif %}
+        </div>
+        
+        <div class="account-main">
+            <div class="account-sidebar">
+                <div class="profile-header">
+                    <div id="user-avatar" class="user-avatar"></div>
+                    <h4>{{ user_data.full_name }}</h4>
+                    <p>{{ user_data.email }}</p>
+                </div>
+                <div class="account-tabs">
+                    <button class="tab-btn active" onclick="showAccountTab('profile')">
+                        <i class="fas fa-user-edit"></i> Profile
+                    </button>
+                    <button class="tab-btn" onclick="showAccountTab('orders')">
+                        <i class="fas fa-shopping-bag"></i> Order History
+                    </button>
+                    <button class="tab-btn" onclick="showAccountTab('address')">
+                        <i class="fas fa-map-marker-alt"></i> Address
+                    </button>
+                    <button class="tab-btn" onclick="showAccountTab('password')">
+                        <i class="fas fa-key"></i> Change Password
+                    </button>
+                </div>
+            </div>
+
+            <div class="account-content-area">
+                <!-- Profile Tab -->
+                <div id="profile" class="account-content active">
+                    <h3><i class="fas fa-user-edit"></i> Edit Profile</h3>
+                    <form class="account-form" method="POST" action="{{ url_for('update_profile') }}">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="full_name">Full Name</label>
+                                <input type="text" id="full_name" name="full_name" value="{{ user_data.full_name }}" required disabled>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="email">Email Address</label>
+                                <input type="email" id="email" name="email" value="{{ user_data.email }}" required disabled>
+                            </div>
+                            <div class="form-group">
+                                <label for="phone">Phone Number</label>
+                                <input type="tel" id="phone" name="phone" value="{{ user_data.phone or '' }}" disabled>
+                            </div>
+                        </div>
+                        <button type="button" id="edit-profile-btn" class="submit-btn">Edit</button>
+                        <button type="submit" id="update-profile-btn" class="submit-btn" style="display:none;">Update Profile</button>
+                    </form>
+                </div>
+
+                <!-- Orders Tab -->
+                <div id="orders" class="account-content">
+                    <h3><i class="fas fa-shopping-bag"></i> Order History</h3>
+                    {% if orders %}
+                        <div class="orders-container">
+                            {% for order in orders %}
+                            <div class="order-card">
+                                <div class="order-header">
+                                    <div class="order-info">
+                                        <h4>Order #{{ order.order_number }}</h4>
+                                        <p class="order-date">
+                                            {%- if order.created_at.strftime is defined -%}
+                                                {{ order.created_at.strftime('%B %d, %Y') }}
+                                            {%- else -%}
+                                                {{ order.created_at }}
+                                            {%- endif -%}
+                                        </p>
+                                    </div>
+                                    <div class="order-status status-{{ order.status | lower }}">
+                                        <i class="fas fa-circle"></i> {{ order.status.title() }}
+                                    </div>
+                                </div>
+                                <div class="order-details">
+                                    <div class="order-amount">
+                                        <strong>Total: ₱{{ "%.2f"|format(order.total_amount) }}</strong>
+                                    </div>
+                                    <div class="order-items">
+                                        <p><strong>Items:</strong></p>
+                                        <ul>
+                                            {% for item in order['items'] %}
+                                            <li>{{ item.product_name }} (x{{ item.quantity }}) - ₱{{ "%.2f"|format(item.unit_price) }}
+                                                {% if order.status in ['Paid', 'Completed'] and item.product_name not in reviewed_products %}
+                                                    <button class="btn-secondary leave-review-btn" data-product="{{ item.product_name }}" data-order="{{ order.order_ID }}" style="margin-left:10px;">Leave a Review</button>
+                                                {% endif %}
+                                            </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                    {% if order.shipping_address_display %}
+                                    <div class="order-address">
+                                        <p><strong>Shipping Address:</strong> {{ order.shipping_address_display }}</p>
+                                    </div>
+                                    {% endif %}
+                                    <a href="{{ url_for('receipt', order_id=order.order_ID) }}" class="btn-primary order-action-btn" style="margin-top:10px;">View Receipt</a>
+                                    {% if order.payment_method == 'Cash on Delivery' %}
+                                        {% if order.status == 'Pending Payment' %}
+                                            <div class="order-action-group">
+                                                <form method="POST" action="{{ url_for('order_paid', order_id=order.order_ID) }}" style="display:inline-block;">
+                                                    <button type="submit" class="btn-primary order-action-btn">Payment Successful</button>
+                                                </form>
+                                                <form method="POST" action="{{ url_for('order_received', order_id=order.order_ID) }}" style="display:inline-block;">
+                                                    <button type="submit" class="btn-primary order-action-btn">Order Received</button>
+                                                </form>
+                                            </div>
+                                        {% elif order.status == 'Paid' %}
+                                            <form method="POST" action="{{ url_for('order_received', order_id=order.order_ID) }}" style="display:inline-block;">
+                                                <button type="submit" class="btn-primary order-action-btn">Order Received</button>
+                                            </form>
+                                        {% endif %}
+                                    {% elif order.payment_method != 'Cash on Delivery' and order.status == 'Paid' %}
+                                        <form method="POST" action="{{ url_for('order_received', order_id=order.order_ID) }}" style="display:inline-block;">
+                                            <button type="submit" class="btn-primary order-action-btn">Order Received</button>
+                                        </form>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="empty-state">
+                            <i class="fas fa-shopping-bag"></i>
+                            <h4>No Orders Yet</h4>
+                            <p>You haven't placed any orders yet. Start shopping to see your order history here!</p>
+                            <a href="{{ url_for('home') }}" class="btn-primary">Start Shopping</a>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Address Tab -->
+                <div id="address" class="account-content">
+                    <h3><i class="fas fa-map-marker-alt"></i> Shipping Address</h3>
+                    
+                    <!-- Current Address Display -->
+                    <div id="current-address-display" style="background: linear-gradient(135deg, #f8f6f3 0%, #fff 100%); border: 2px solid #e6c8a3; border-radius: 12px; padding: 20px; margin-bottom: 25px; text-align: center;">
+                        <h4 style="color: #b8860b; margin-bottom: 15px; font-family: 'Playfair Display', serif;">
+                            <i class="fas fa-shipping-fast"></i> Current Shipping Address
+                        </h4>
+                        <div id="address-display-content" style="color: #473936; font-size: 1.1rem; line-height: 1.6;">
+                            <p><strong>This address will be automatically used for shipping when you checkout.</strong></p>
+                            <div id="current-address-text" style="margin-top: 15px; padding: 15px; background: rgba(212, 175, 55, 0.1); border-radius: 8px;">
+                                <p id="address-details-display"></p>
+                                <p id="full-address-display"></p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <h4 style="color: #b8860b; margin-bottom: 15px;">Update Shipping Address</h4>
+                    <form class="account-form" method="POST" action="{{ url_for('update_address') }}">
+                        <div class="form-group">
+                            <label for="region">Region</label>
+                            <select id="region" name="region" required></select>
+                        </div>
+                        <div class="form-group">
+                            <label for="province">Province</label>
+                            <select id="province" name="province" required disabled></select>
+                        </div>
+                        <div class="form-group">
+                            <label for="city">City/Municipality</label>
+                            <select id="city" name="city" required disabled></select>
+                        </div>
+                        <div class="form-group">
+                            <label for="barangay">Barangay</label>
+                            <select id="barangay" name="barangay" required disabled></select>
+                        </div>
+                        <div class="form-group">
+                            <label for="address_details">Street/House/Unit (optional)</label>
+                            <input type="text" id="address_details" name="address_details" placeholder="e.g. 123 Main St, Apt 4B">
+                        </div>
+                        <button type="submit" class="submit-btn">Update Address</button>
+                    </form>
+                </div>
+
+                <!-- Password Tab -->
+                <div id="password" class="account-content">
+                    <h3><i class="fas fa-key"></i> Change Password</h3>
+                    <form class="account-form" method="POST" action="{{ url_for('update_password') }}">
+                        <div class="form-group">
+                            <label for="current_password">Current Password</label>
+                            <input type="password" id="current_password" name="current_password" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="new_password">New Password</label>
+                            <input type="password" id="new_password" name="new_password" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="confirm_password">Confirm New Password</label>
+                            <input type="password" id="confirm_password" name="confirm_password" required>
+                        </div>
+                        <button type="submit" class="submit-btn">Update Password</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script src="{{ url_for('static', filename='js/address-autofill.js') }}"></script>
+<script>
+    function showAccountTab(tabName) {
+        // Hide all content
+        document.querySelectorAll('.account-content').forEach(content => {
+            content.classList.remove('active');
+        });
+        // Deactivate all tabs
+        document.querySelectorAll('.tab-btn').forEach(button => {
+            button.classList.remove('active');
+        });
+        // Show selected content
+        document.getElementById(tabName).classList.add('active');
+        // Activate selected tab
+        const buttonToActivate = document.querySelector(`.tab-btn[onclick=\"showAccountTab('${tabName}')\"]`);
+        if (buttonToActivate) {
+            buttonToActivate.classList.add('active');
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        // Ensure the first tab is active on page load
+        showAccountTab('profile');
+        // Profile edit logic
+        const editBtn = document.getElementById('edit-profile-btn');
+        const updateBtn = document.getElementById('update-profile-btn');
+        const profileFields = [
+            document.getElementById('full_name'),
+            document.getElementById('email'),
+            document.getElementById('phone')
+        ];
+        editBtn.addEventListener('click', function() {
+            profileFields.forEach(field => field.disabled = false);
+            updateBtn.style.display = '';
+            editBtn.style.display = 'none';
+        });
+        // Optionally, after submit, you can re-disable fields (handled server-side on reload)
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // Avatar with initial and random color
+        var avatar = document.getElementById('user-avatar');
+        var initial = '{{ user_data.full_name[0]|upper }}';
+        var colors = [
+            '#FFB300', '#803E75', '#FF6800', '#A6BDD7', '#C10020',
+            '#CEA262', '#817066', '#007D34', '#F6768E', '#00538A',
+            '#FF7A5C', '#53377A', '#FF8E00', '#B32851', '#F4C800',
+            '#7F180D', '#93AA00', '#593315', '#F13A13', '#232C16'
+        ];
+        // Use full_name or email to get a consistent color per user
+        var seed = ('{{ user_data.full_name }}' || '{{ user_data.email }}');
+        var hash = 0;
+        for (var i = 0; i < seed.length; i++) hash = seed.charCodeAt(i) + ((hash << 5) - hash);
+        var color = colors[Math.abs(hash) % colors.length];
+        avatar.textContent = initial;
+        avatar.style.background = color;
+        avatar.style.color = '#fff';
+        avatar.style.width = '48px';
+        avatar.style.height = '48px';
+        avatar.style.display = 'flex';
+        avatar.style.alignItems = 'center';
+        avatar.style.justifyContent = 'center';
+        avatar.style.borderRadius = '50%';
+        avatar.style.fontSize = '2rem';
+        avatar.style.fontWeight = 'bold';
+        avatar.style.margin = '0 auto 10px auto';
+
+        // Prefill address fields if user has saved address
+        fetch('/api/user_info')
+            .then(response => response.json())
+            .then(data => {
+                console.log('Debug - Received data from API:', data);
+                if (data.logged_in) {
+                    document.getElementById('address_details').value = data.address_details || '';
+                    
+                    // Update current address display with readable names
+                    const addressDetailsDisplay = document.getElementById('address-details-display');
+                    const fullAddressDisplay = document.getElementById('full-address-display');
+                    
+                    if (data.address_details) {
+                        addressDetailsDisplay.textContent = data.address_details;
+                    }
+                    
+                    console.log('Debug - Readable address data:', data.readable_address);
+                    
+                    // Use readable address from backend
+                    if (data.readable_address) {
+                        const addressParts = [];
+                        if (data.readable_address.barangay_name && data.readable_address.barangay_name !== data.barangay) {
+                            addressParts.push(data.readable_address.barangay_name);
+                        }
+                        if (data.readable_address.city_name && data.readable_address.city_name !== data.city) {
+                            addressParts.push(data.readable_address.city_name);
+                        }
+                        if (data.readable_address.province_name && data.readable_address.province_name !== data.province) {
+                            addressParts.push(data.readable_address.province_name);
+                        }
+                        if (data.readable_address.region_name && data.readable_address.region_name !== data.region) {
+                            addressParts.push(data.readable_address.region_name);
+                        }
+                        
+                        console.log('Debug - Address parts:', addressParts);
+                        
+                        if (addressParts.length > 0) {
+                            fullAddressDisplay.textContent = addressParts.join(', ');
+                        } else if (data.address) {
+                            fullAddressDisplay.textContent = data.address;
+                        } else {
+                            fullAddressDisplay.textContent = 'No address set';
+                            addressDetailsDisplay.textContent = '';
+                        }
+                    } else if (data.address) {
+                        fullAddressDisplay.textContent = data.address;
+                    } else {
+                        fullAddressDisplay.textContent = 'No address set';
+                        addressDetailsDisplay.textContent = '';
+                    }
+                    
+                    console.log('Debug - Final address display:', fullAddressDisplay.textContent);
+                    
+                    setTimeout(() => {
+                        if (data.region) document.getElementById('region').value = data.region;
+                        document.getElementById('region').dispatchEvent(new Event('change'));
+                        setTimeout(() => {
+                            if (data.province) document.getElementById('province').value = data.province;
+                            document.getElementById('province').dispatchEvent(new Event('change'));
+                            setTimeout(() => {
+                                if (data.city) document.getElementById('city').value = data.city;
+                                document.getElementById('city').dispatchEvent(new Event('change'));
+                                setTimeout(() => {
+                                    if (data.barangay) document.getElementById('barangay').value = data.barangay;
+                                }, 400);
+                            }, 400);
+                        }, 400);
+                    }, 400);
+                }
+            });
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.leave-review-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                const product = btn.getAttribute('data-product');
+                const orderId = btn.getAttribute('data-order');
+                document.getElementById('review-product-name').value = product;
+                document.getElementById('review-order-id').value = orderId;
+                document.getElementById('review-modal').style.display = 'flex';
+            });
+        });
+        document.getElementById('close-review-modal').onclick = function() {
+            document.getElementById('review-modal').style.display = 'none';
+        };
+        // Star rating UI
+        const stars = document.querySelectorAll('#star-rating .star');
+        const ratingInput = document.getElementById('review-rating');
+        let currentRating = 0;
+        stars.forEach(star => {
+            star.addEventListener('mouseenter', function() {
+                const val = parseInt(this.getAttribute('data-value'));
+                stars.forEach((s, i) => {
+                    s.classList.toggle('hovered', i < val);
+                });
+            });
+            star.addEventListener('mouseleave', function() {
+                stars.forEach((s, i) => {
+                    s.classList.toggle('hovered', i < currentRating);
+                });
+            });
+            star.addEventListener('click', function() {
+                currentRating = parseInt(this.getAttribute('data-value'));
+                ratingInput.value = currentRating;
+                stars.forEach((s, i) => {
+                    s.classList.toggle('selected', i < currentRating);
+                });
+            });
+        });
+    });
+</script>
+<div id="review-modal">
+    <div class="modal-content">
+        <button id="close-review-modal">&times;</button>
+        <h3>Leave a Review</h3>
+        <form method="POST" action="{{ url_for('submit_review') }}">
+            <input type="hidden" name="product_name" id="review-product-name">
+            <input type="hidden" name="order_id" id="review-order-id">
+            <div class="review-form-group">
+                <label>Rating</label>
+                <div class="star-rating" id="star-rating">
+                    {% for i in range(1,6) %}
+                    <span class="star" data-value="{{ i }}">&#9733;</span>
+                    {% endfor %}
+                    <input type="hidden" name="rating" id="review-rating" required>
+                </div>
+            </div>
+            <div class="review-form-group">
+                <label for="review-comment">Comment</label>
+                <textarea name="comment" id="review-comment" rows="5" placeholder="Share your experience with this product..." required></textarea>
+            </div>
+            <div class="anonymous-checkbox">
+                <input type="checkbox" name="anonymous" value="1" id="anonymous-checkbox">
+                <label for="anonymous-checkbox">Leave as anonymous</label>
+            </div>
+            <button type="submit">Submit Review</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

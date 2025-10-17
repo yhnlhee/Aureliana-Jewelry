@@ -1,0 +1,174 @@
+/* about.css - Final Cleanup */
+
+/* Add padding to the main content area to avoid being hidden by the fixed header */
+.about-main {
+    padding-top: 100px;
+    padding-bottom: 4rem;
+}
+
+/* General content styling */
+.about-section, .mission, .story-featured-container, .members-section {
+    max-width: 1600px;
+    margin: 0 auto 4rem;
+    text-align: center;
+}
+
+h1, h2 {
+    font-family: 'Playfair Display', serif;
+}
+
+.about-section h1 {
+    font-size: 3rem;
+    margin-bottom: 1.5rem;
+    color: #4a4a4a;
+}
+
+.about-section p {
+    font-size: 1.1rem;
+    max-width: 800px;
+    margin: 0 auto 1rem;
+    color: #4a4a4a;
+    line-height: 1.7;
+}
+
+.about-section blockquote {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    font-style: italic;
+    color: #8B4513;
+    margin-top: 2rem;
+    border: none;
+    padding: 0;
+}
+
+/* Mission & Vision Section */
+.mission-section {
+    background: rgba(255, 255, 255, 0.6);
+    padding: 3rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.mission-section h2 {
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+    color: #4a4a4a;
+}
+
+.mission-section p {
+    text-align: justify;
+    margin-bottom: 1.5rem;
+    color: #4a4a4a;
+}
+
+/* Story and Featured Carousel */
+.story-featured-container {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 4rem;
+    align-items: start;
+}
+
+.video-thumbnail h2, .featured-carousel h2 {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+    color: #4a4a4a;
+}
+
+.video-thumbnail p, .featured-carousel p {
+    font-size: 1rem;
+    color: #6c6c6c;
+    margin-bottom: 1.5rem;
+}
+
+.video-frame, .carousel-wrapper {
+    width: 100%;
+    height: 600px;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #fff;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.video-frame video, .carousel-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.carousel-wrapper {
+    position: relative;
+}
+
+.carousel-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    transition: opacity 1.2s ease-in-out;
+}
+
+.carousel-image.active {
+    opacity: 1;
+}
+
+/* Team Members */
+.members-section h2 {
+    font-size: 2.5rem;
+    margin-bottom: 3rem;
+    color: #4a4a4a;
+}
+
+.members-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2.5rem;
+    justify-items: center;
+}
+
+.member-card img {
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 1.5rem;
+    border: 5px solid #fff;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.member-card img:hover {
+    transform: translateY(-5px) scale(1.05);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.member-card h3 {
+    font-size: 1.2rem;
+    color: #4a4a4a;
+}
+
+/* Responsive Styles */
+@media (max-width: 1024px) {
+    .story-featured-container {
+        grid-template-columns: 1fr;
+        gap: 5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .about-main {
+        padding-top: 80px;
+    }
+    
+    .about-section h1 {
+        font-size: 2.5rem;
+    }
+
+    .mission-section {
+        padding: 2rem;
+    }
+
+    .video-frame, .carousel-wrapper {
+        height: 300px;
+    }
+}

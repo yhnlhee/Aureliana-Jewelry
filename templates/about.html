@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+{% block title %}Aureliana Jewelry - About Us{% endblock %}
+
+{% block head_styles %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/about.css') }}" />
+{% endblock %}
+
+{% block content %}
+<div class="about-main">
+    <section class="about-section">
+        <h1>About Aureliana Jewelry</h1>
+        <p>
+            At Aureliana Jewelry, we believe that every piece tells a story — one of elegance, heritage, and individuality.
+            Founded with a passion for timeless design and artisanal craftsmanship, our collections are a celebration of refined beauty and meaningful detail.
+        </p>
+        <p>
+            Each creation is thoughtfully designed to embody both modern sophistication and classic charm. From delicate everyday pieces to bold statement designs, Aureliana Jewelry is made to empower, inspire, and illuminate the unique light in every wearer.
+        </p>
+        <blockquote>“Jewelry that whispers luxury.”</blockquote>
+    </section>
+
+    <section class="mission">
+        <div class="mission-section">
+            <h2>Our Mission & Vision</h2>
+            <p><strong>Mission:</strong> To design timeless, artisan-crafted jewelry that celebrates every story — empowering wearers with elegance, confidence, and meaning. At Aureliana, we believe jewelry is more than an accessory — it is a form of art, a vessel of creativity, and a personal expression of one's inner light. Every piece is thoughtfully crafted to reflect individuality, emotion, and soul, turning moments into heirlooms and self-expression into wearable beauty.</p>
+            <p><strong>Vision:</strong> To become a global symbol of refined jewelry design — where heritage meets innovation, and every client feels intimately connected to the artistry they wear. We aim to redefine modern luxury through authenticity, community, and thoughtful design.</p>
+        </div>
+    </section>
+
+    <section class="story-featured-container">
+        <div class="video-thumbnail">
+            <h2>Our Story</h2>
+            <p>Witness how each cherished Aureliana piece is thoughtfully crafted.</p>
+            <div class="video-frame">
+                <video autoplay muted loop playsinline poster="{{ url_for('static', filename='logo/aurelianalogo.png') }}">
+                    <source src="{{ url_for('static', filename='vid/about_aureliana.mp4') }}" type="video/mp4" />
+                    Your browser doesn't support the video tag.
+                </video>
+            </div>
+        </div>
+
+        <div class="featured-carousel">
+            <h2>Signature Creations</h2>
+            <p>Discover our most loved designs that define Aureliana elegance.</p>
+            <div class="carousel-wrapper">
+                <img src="{{ url_for('static', filename='Bracelet/BRG003.png') }}" class="carousel-image active" alt="Gold Bracelet" />
+                <img src="{{ url_for('static', filename='Earring/EG002.png') }}" class="carousel-image" alt="Gold Earring" />
+                <img src="{{ url_for('static', filename='Necklace/NG002.png') }}" class="carousel-image" alt="Gold Necklace" />
+                <img src="{{ url_for('static', filename='Ring/RG001.png') }}" class="carousel-image" alt="Gold Ring" />
+            </div>
+        </div>
+    </section>
+    
+    <section class="members-section">
+        <h2>Meet Our Team</h2>
+        <div class="members-container">
+            <div class="member-card">
+                <img src="{{ url_for('static', filename='team/rhen.png') }}" alt="Member 3" />
+                <h3>Mecha, Rhenalyn</h3>
+            </div>
+            <div class="member-card">
+                <img src="{{ url_for('static', filename='team/chris.png') }}" alt="Member 2" />
+                <h3>Malabanan, Chrislhin</h3>
+            </div>
+            <div class="member-card">
+                <img src="{{ url_for('static', filename='team/nei.png') }}" alt="Member 1" />
+                <h3>Bobadilla, Neilyn</h3>
+            </div>
+            <div class="member-card">
+                <img src="{{ url_for('static', filename='team/kim.png') }}" alt="Member 4" />
+                <h3>Napolitano, Kim Verlie</h3>
+            </div>
+            <div class="member-card">
+                <img src="{{ url_for('static', filename='team/yohan.png') }}" alt="Member 5" />
+                <h3>Soldevilla, John Gabriel</h3>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Carousel Script
+    document.addEventListener('DOMContentLoaded', function () {
+        const carouselImgs = document.querySelectorAll('.carousel-image');
+        let idx = 0;
+        if (carouselImgs.length > 0) {
+            setInterval(() => {
+                if (document.hidden) return; // Don't run animation when tab is not visible
+                carouselImgs[idx].classList.remove('active');
+                idx = (idx + 1) % carouselImgs.length;
+                carouselImgs[idx].classList.add('active');
+            }, 4000);
+        }
+    });
+</script>
+{% endblock %}
